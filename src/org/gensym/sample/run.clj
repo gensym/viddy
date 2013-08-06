@@ -4,7 +4,7 @@
             [org.gensym.sample.jetty :as jetty]))
 
 (defn start [port]
-  (let [server (jetty/make-jetty-server webapp/handler port)]
+  (let [server (jetty/make-jetty-server (webapp/handler) port)]
     (.start server)
     (fn [] (.stop server))))
 
