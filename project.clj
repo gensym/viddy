@@ -8,5 +8,7 @@
                  [ring/ring-jetty-adapter "1.2.0"]
                  [org.eclipse.jetty/jetty-servlet "7.4.2.v20110526"]
                  [clj-http "0.7.6"]
-                 [org.clojure/data.json "0.2.2"]]
+                 [org.clojure/data.json "0.2.2"]
+                 [org.clojure/java.jdbc "0.3.0-alpha4"]
+                 [postgresql "9.1-901.jdbc4"]]
   :main org.gensym.sample.run)
