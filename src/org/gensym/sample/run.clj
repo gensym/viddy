@@ -1,6 +1,6 @@
 (ns org.gensym.sample.run
   (:gen-class)
-  (:require [org.gensym.sample.webcore :as webapp]
+  (:require [org.gensym.viddy.web.webcore :as webapp]
             [org.gensym.sample.jetty :as jetty]))
 
 (defn start [port]

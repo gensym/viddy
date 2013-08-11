@@ -2,7 +2,7 @@
 -- e.g., If the station at California and Milwaukee is moved a dozen feet, changing its latitude and longitude, is it defined as a new station? Should it be? Not a question I currently want to answer.
 
 CREATE TABLE station_updates (
-       id int unique,
+       id serial primary key,
        station_id int,
        station_name varchar(255),
        t timestamp with time zone,
