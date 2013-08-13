@@ -7,13 +7,16 @@
   (reduce (fn [m [k v]] (assoc m k v)) {}
           (json/read-str json-string)))
 
-(defn- divvy-string->datetime [divvy-string]
-  ;; 2013-08-08 11:16:01 PM
-  (time-format/parse (time-format/formatter "yyyy-MM-dd hh:mm:ss a") divvy-string))
+;; 2013-08-08 11:16:01 PM
+(def time-formatter (time-format/formatter "yyyy-MM-dd hh:mm:ss a"))
+
+(defn- divvy-string->date [divvy-string]
+  (->>  divvy-string
+        (time-format/parse time-formatter)
+        (.toDate)))
 
 (defn- from-divvy-api [cleaned-json]
   (let [stations (get cleaned-json "stationBeanList")
-        execution-time (divvy-string->datetime (get cleaned-json "executionTime"))
         keymap {:id "id"
                 :bikes "availableBikes"
                 :docks "availableDocks"
@@ -26,15 +29,17 @@
     (map (fn [station]
            (reduce (fn [m [k v]]
                      (assoc m k (get station v)))
-                   {:updateTime execution-time}
+                   {}
                    keymap))
          stations)))
 
 (defn current-station-status []
   (let [val (client/get "http://divvybikes.com/stations/json")
         status (:status val)]
-    {:status status
-     :stations (if (= 200 status)
-                 (from-divvy-api
-                  (clean-json (:body val)))
-                 {})}))
+    (if (= 200 status)
+      (let [cleaned-json (clean-json (:body val))]
+        {:status 200
+         :stations (from-divvy-api cleaned-json)
+         :execution-time (divvy-string->date
+                          (get cleaned-json "executionTime")) })
+      {})))

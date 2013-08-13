@@ -3,25 +3,27 @@
             [clojure.java.jdbc.sql :as sqldsl]))
 
 
-(defn- datetime->sqldate [datetime]
-  (-> datetime
-      .toDate
+(comment (def db-spec {:connection-uri "jdbc:postgresql://localhost:5432/viddy"}))
+
+(defn- date->sqldate [date]
+  (-> date
       .getTime
       java.sql.Timestamp.))
 
-(defn- datetimes->sqldates [rows]
-  (map
-   (fn [row]
-     (reduce (fn [m [k v]]
-               (assoc m k
-                      (if (= org.joda.time.DateTime (type v))
-                        (datetime->sqldate v)
-                        v)))
-             {} row))
-   rows))
+(defn save-station-updates! [db-spec execution-time station-updates]
+  (sql/db-transaction
+   [t-con db-spec]
+   (let [[{execution-id :id}] 
+         (sql/insert! t-con "station_update_executions"
+                      {"execution_time"
+                       (date->sqldate execution-time)})]
+     (apply sql/insert! t-con "station_updates"
+            (map
+             (fn [row]
+               (assoc row "execution_id" execution-id))
+             station-updates)))))
 
-(defn save-station-updates! [db-spec station-updates]
-  (apply sql/insert!
-         db-spec
-         "station_updates"
-         (datetimes->sqldates station-updates)))
+(defn current-stations [db-spec]
+  (sql/query db-spec
+             ["SELECT * FROM station_updates WHERE t = (SELECT MAX(t) FROM station_updates)"]))
+

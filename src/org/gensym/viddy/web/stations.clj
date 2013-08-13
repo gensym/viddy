@@ -27,7 +27,7 @@
 
 (html/defsnippet stations-table "templates/stations.html" station-row-selector
   [station]
-  [:td.station-id] (html/content (:station-id (str station)))
+  [:td.station-id] (html/content (str (:station-id station)))
   [:td.station-name] (html/content (:station-name station))
   [:td.station-status] (html/content (:station-status station))
   [:td.station-available-bikes-quantity] (html/content
@@ -36,6 +36,5 @@
                                           (str (:available-docks station))))
 
 (html/deftemplate html-page "templates/stations.html" [req]
-  [:p.sample-text] (html/content "Replaced text")
   [:table.stations-list :> :tbody] (html/content
                                     (map #(stations-table %) dummy-content)))

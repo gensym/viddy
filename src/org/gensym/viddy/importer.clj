@@ -8,7 +8,6 @@
 
 (def divvy-api->storage
   {:id "station_id"
-   :updateTime "t"
    :docks "docks"
    :bikes "bikes"
    :latitude "latitude"
@@ -26,7 +25,8 @@
   (let [current-status 
         (stations/current-station-status)]
     (if (= 200 (:status current-status))
-      (let [rows (->> current-status
+      (let [execution-time (:execution-time current-status)
+            rows (->> current-status
                       (:stations)
                       (mapkeys divvy-api->storage))]
-        (storage/save-station-updates! db-spec rows)))))
+        (storage/save-station-updates! db-spec execution-time rows)))))
