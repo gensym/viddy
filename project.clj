@@ -13,4 +13,4 @@
                  [org.clojure/data.json "0.2.2"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [postgresql "9.1-901.jdbc4"]]
-  :main org.gensym.sample.run)
+  :main org.gensym.viddy.run)
