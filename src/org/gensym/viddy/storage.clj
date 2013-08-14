@@ -10,6 +10,12 @@
       .getTime
       java.sql.Timestamp.))
 
+(defn replace-keys [keymap m]
+  (reduce (fn [m [k v]]
+            (if (contains? keymap k)
+              (assoc m (get keymap k) v)
+              (assoc m k v))) {} m))
+
 (defn save-station-updates! [db-spec execution-time station-updates]
   (sql/db-transaction
    [t-con db-spec]
@@ -24,6 +30,11 @@
              station-updates)))))
 
 (defn current-stations [db-spec]
-  (sql/query db-spec
-             ["SELECT * FROM station_updates WHERE t = (SELECT MAX(t) FROM station_updates)"]))
+  (->>
+   (sql/query db-spec
+              ["SELECT id, station_id, station_name, bikes, docks, longitude, latitude, status, execution_time FROM current_stations"])
+   (map 
+    #(replace-keys {:station_id :station-id
+                   :station_name :station-name
+                   :execution_time :execution-time} %))))
 

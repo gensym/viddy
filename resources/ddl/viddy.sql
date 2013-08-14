@@ -36,5 +36,17 @@ CREATE TABLE station_updates (
 CREATE INDEX station_updates_station_id ON station_updates (station_id);
 
 
-
-
+CREATE VIEW current_stations AS
+       SELECT s.id,
+              s.station_id, 
+              s.station_name,
+              s.bikes,
+              s.docks,
+              s.longitude,
+              s.latitude,
+              s.status,
+              e.execution_time 
+       FROM station_updates s, station_update_executions e 
+       WHERE s.execution_id = e.id
+       AND e.insertion_time = (
+           SELECT MAX(e2.insertion_time) FROM station_update_executions e2);
