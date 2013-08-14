@@ -36,5 +36,8 @@
    (map 
     #(replace-keys {:station_id :station-id
                    :station_name :station-name
-                   :execution_time :execution-time} %))))
+                    :execution_time :execution-time
+                    :bikes :available-bikes
+                    :docks :available-docks
+                    :status :station-status} %))))
 
