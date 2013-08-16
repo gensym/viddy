@@ -45,9 +45,8 @@
      :body "Oops"}))
 
 
-(defn handler []
-  (let [db-spec  {:connection-uri "jdbc:postgresql://localhost:5432/viddy"}]
-    (->
-     (params/wrap-params (partial router db-spec))
-     (file/wrap-file "resources/public")
-     (file-info/wrap-file-info))))
+(defn handler [db-spec]
+  (->
+   (params/wrap-params (partial router db-spec))
+   (file/wrap-file "resources/public")
+   (file-info/wrap-file-info)))

@@ -3,9 +3,6 @@
             [org.gensym.viddy.storage :as storage]
             [clojure.java.jdbc.sql :as sql]))
 
-;; TODO - reuse a connection, rather than reconnect with every operation
-(def db-spec {:connection-uri "jdbc:postgresql://localhost:5432/viddy"})
-
 (def divvy-api->storage
   {:id "station_id"
    :docks "docks"
@@ -21,7 +18,7 @@
     (fn [m [k v]] (assoc m (get keymap k) v)) {} %)
    mapcoll))
 
-(defn import-current-station-status! []
+(defn import-current-station-status! [db-spec]
   (let [current-status 
         (stations/current-station-status)]
     (if (= 200 (:status current-status))

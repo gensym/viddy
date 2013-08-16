@@ -5,16 +5,17 @@
             [org.gensym.viddy.importer :as importer]
             [org.gensym.sample.jetty :as jetty]))
 
-(defn start-schedulers []
+(defn start-schedulers [db-spec]
   (let [s (sched/make-scheduler!
-           importer/import-current-station-status!
+           #(importer/import-current-station-status! db-spec)
            0
            (* 1000 60))]
     (fn [] (sched/shutdown! s))))
 
 (defn start [port]
-  (let [server (jetty/make-jetty-server (webapp/handler) port)
-        schedulers (start-schedulers)]
+  (let [db-spec  {:connection-uri (System/getenv "DATABASE_URL")}
+        server (jetty/make-jetty-server (webapp/handler db-spec) port)
+        schedulers (start-schedulers db-spec)]
     (.start server)
     (fn []
       (schedulers)
