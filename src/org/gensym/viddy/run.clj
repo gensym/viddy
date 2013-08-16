@@ -22,6 +22,8 @@
       (.stop server))))
 
 (defn -main []
-  (start 8080)
-  (.start (Thread. #())))
+  (let [port (Integer/parseInt
+              (or (System/getenv "PORT") "8080"))]
+    (start port)
+    (.start (Thread. #()))))
 
