@@ -13,7 +13,7 @@
     (fn [] (sched/shutdown! s))))
 
 (defn start [port]
-  (let [db-spec  {:connection-uri (System/getenv "DATABASE_URL")}
+  (let [db-spec  {:connection-uri (str "jdbc:" (System/getenv "DATABASE_URL"))}
         server (jetty/make-jetty-server (webapp/handler db-spec) port)
         schedulers (start-schedulers db-spec)]
     (.start server)
