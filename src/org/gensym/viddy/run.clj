@@ -12,14 +12,30 @@
            (* 1000 60))]
     (fn [] (sched/shutdown! s))))
 
+
+(defn- to-db-spec [uristring]
+  (let [uri (java.net.URI. uristring)
+        without-auth     {:subprotocol "postgresql"
+                          :subname (str "//" (.getHost uri) ":"
+                                        (.getPort uri)
+                                        (.getPath uri))}]
+    (if-let [user-info (.getUserInfo uri)]
+      (let [[user password] (clojure.string/split user-info #":")]
+        (merge  without-auth
+                {:user user
+                 :password password}))
+      without-auth)))
+
 (defn start [port]
-  (let [db-spec  {:connection-uri (str "jdbc:" (System/getenv "DATABASE_URL"))}
+  (let [db-spec (to-db-spec  (System/getenv "DATABASE_URL"))
         server (jetty/make-jetty-server (webapp/handler db-spec) port)
         schedulers (start-schedulers db-spec)]
     (.start server)
     (fn []
       (schedulers)
       (.stop server))))
+
+
 
 (defn -main []
   (let [port (Integer/parseInt
