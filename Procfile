@@ -1,1 +1,3 @@
-web: lein trampoline run
+web: lein webrun
+worker: line workerrun
+
