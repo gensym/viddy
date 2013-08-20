@@ -1,6 +1,7 @@
 (ns org.gensym.viddy.importer
   (:require [org.gensym.viddy.stations :as stations]
             [org.gensym.viddy.storage :as storage]
+            [clojure.tools.logging :as log]
             [clojure.java.jdbc.sql :as sql]))
 
 (def divvy-api->storage
@@ -22,8 +23,12 @@
   (let [current-status 
         (stations/current-station-status)]
     (if (= 200 (:status current-status))
-      (let [execution-time (:execution-time current-status)
-            rows (->> current-status
-                      (:stations)
-                      (mapkeys divvy-api->storage))]
-        (storage/save-station-updates! db-spec execution-time rows)))))
+      (do
+        (log/info "Retrived current Divvy station status")
+        (let [execution-time (:execution-time current-status)
+              rows (->> current-status
+                        (:stations)
+                        (mapkeys divvy-api->storage))]
+          (storage/save-station-updates! db-spec execution-time rows)))
+      (do
+        (log/error "Failed to retrieve current Divvy station status: " current-status)))))
