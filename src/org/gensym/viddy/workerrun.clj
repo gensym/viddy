@@ -19,7 +19,6 @@
 
 (defn -main []
   (let [db-spec (dbconn/db-spec  (System/getenv "DATABASE_URL"))]
-    (comment (start db-spec))
-    (println "Worker started.")
-    (.start (Thread. #()))))
+    (start db-spec)
+    (println "Worker started.")))
 

@@ -24,7 +24,7 @@
         (stations/current-station-status)]
     (if (= 200 (:status current-status))
       (do
-        (log/info "Retrived current Divvy station status")
+        (log/info "Retrieved current Divvy station status")
         (let [execution-time (:execution-time current-status)
               rows (->> current-status
                         (:stations)

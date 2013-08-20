@@ -1,3 +1,3 @@
 web: lein webrun
-worker: line workerrun
+worker: lein workerrun
 

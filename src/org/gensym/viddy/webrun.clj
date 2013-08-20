@@ -16,5 +16,4 @@
   (let [port (Integer/parseInt
               (or (System/getenv "PORT") "8080"))
         db-spec (dbconn/db-spec  (System/getenv "DATABASE_URL"))]
-    (start port db-spec)
-    (.start (Thread. #()))))
+    (start port db-spec)))
