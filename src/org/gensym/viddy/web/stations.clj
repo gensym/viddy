@@ -13,6 +13,9 @@
   [:td.station-available-docks-quantity] (html/content
                                           (str (:available-docks station))))
 
-(html/deftemplate html-page "templates/stations.html" [stations-fn req]
+(html/deftemplate stations-html-page "templates/stations.html" [stations]
   [:table.stations-list :> :tbody] (html/content
-                                    (map #(stations-table %) (stations-fn))))
+                                    (map #(stations-table %) stations)))
+
+(html/deftemplate station-html-page "templates/station.html" [station-updates]
+  )
