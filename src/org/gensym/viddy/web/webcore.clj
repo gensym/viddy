@@ -19,8 +19,8 @@
                                (stations/stations-html-page
                                 (storage/current-stations db-spec)))))
    (w/re-matcher #"/station/(\d+)\.html"
-                 (fn [req station-id]
-                   (html-page station-id)))))
+                 (fn [req station-id] (html-page
+                                      (stations/station-html-page {} []))))))
 
 (defn handler [db-spec]
   (-> (params/wrap-params (router db-spec))

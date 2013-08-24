@@ -17,5 +17,8 @@
   [:table.stations-list :> :tbody] (html/content
                                     (map #(stations-table %) stations)))
 
-(html/deftemplate station-html-page "templates/station.html" [station-updates]
+(html/deftemplate station-html-page "templates/station.html" [station-info
+                                                              station-updates]
+  [:title] (html/content (str "This station"))
+  
   )

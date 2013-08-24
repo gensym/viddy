@@ -29,6 +29,22 @@
                (assoc row "execution_id" execution-id))
              station-updates)))))
 
+(defn station-updates [db-spec station-id]
+  (->>
+   (sql/query db-spec
+              [(str "SELECT s.bikes, s.docks, "
+                    "       s.longitude, s.latitude, s.status, "
+                    "       e.execution_time "
+                    "FROM station_updates s, station_update_executions e "
+                    "WHERE s.execution_id = e.id AND s.station_id = ? "
+                    "ORDER BY e.insertion_time"),
+               station-id])
+   (map
+    #(replace-keys {:execution_time :execution-time
+                    :bikes :available-bikes
+                    :docks :available-docks
+                    :status :station-status} %))))
+
 (defn current-stations [db-spec]
   (->>
    (sql/query db-spec

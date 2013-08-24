@@ -1,11 +1,34 @@
 <html>
   <head>
-    <title>Some station</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <title>Station name</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"
+          media="screen">
+    <script language="javascript" type="text/javascript" src="/js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="/js/jquery.flot.js"></script>
   </head>
-<div class="navbar">
-  <a class="navbar-brand" href="#">Some Station</a>
-</div>
-<div class="body container">
-</div>
+  <body>
+    <div class="navbar">
+      <a class="navbar-brand" href="#">Station name here</a>
+    </div>
+    <div class="body container">
+      <div class="usage-graph" style="width:600px;height:300px">
+        
+      </div>
+    </div>
+  </body>
+
+  <script id="data" type="text/javascript">
+    $(function() {
+    
+		var d1 = [];
+		for (var i = 0; i < 100; i += 0.05) {
+			d1.push([i, Math.sin(i)]);
+		}
+
+		$.plot(".usage-graph.bar", [ d1 ]);
+                                    });
+
+
+
+  </script>
 </html>
