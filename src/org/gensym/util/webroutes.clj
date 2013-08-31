@@ -7,7 +7,7 @@
       [(f req)]
       nil)))
 
-(defn re-matcher [re f]
+(defn regex-matcher [re f]
   (fn [req]
     (if-let [matches (re-matches re (:uri req))]
       [(apply f req (rest matches))]

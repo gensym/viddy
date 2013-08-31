@@ -10,6 +10,7 @@
                  [ring/ring-jetty-adapter "1.2.0"]
                  [org.eclipse.jetty/jetty-servlet "7.4.2.v20110526"]
                  [enlive "1.1.1"]
+                 [hiccup "1.0.4"]
                  [clj-http "0.7.6"]
                  [clj-time "0.5.1"]
                  [org.clojure/data.json "0.2.2"]

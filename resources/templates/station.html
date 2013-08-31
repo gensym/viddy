@@ -3,15 +3,25 @@
     <title>Station name</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet"
           media="screen">
-    <script language="javascript" type="text/javascript" src="/js/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="/js/jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="/js/jsedn.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/jquery.flot.time.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="/js/jsedn.js"></script>
+    <script language="javascript" type="text/javascript"
+            src="/js/underscore-min.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/station_updates.js"></script>
             
   </head>
   <body>
     <div class="navbar">
-      <a class="navbar-brand" href="#">Station name here</a>
+      <a id="station-header" class="navbar-brand" href="#">Station name here</a>
     </div>
+
     <div class="body container">
       <div class="usage-graph" style="width:600px;height:300px">
         
@@ -20,17 +30,7 @@
   </body>
 
   <script id="data" type="text/javascript">
-    $(function() {
-    
-		var d1 = [];
-		for (var i = 0; i < 100; i += 0.05) {
-			d1.push([i, Math.sin(i)]);
-		}
-
-		$.plot(".usage-graph.bar", [ d1 ]);
-                                    });
-
-
-
+    var stationId = $("#station-header").data("station-id");
+    update_station_graph(".usage-graph", stationId);
   </script>
-</html>
+</htmlp>

@@ -29,6 +29,19 @@
                (assoc row "execution_id" execution-id))
              station-updates)))))
 
+(defn station-info [db-spec station-id]
+  (first
+   (->>
+    (sql/query db-spec
+               [(str "SELECT s.station_name, s.longitude, s.latitude, "
+                     "       s.status, s.bikes, s.docks "
+                     "FROM current_stations s WHERE s.station_id = ?")
+                station-id])
+    (map
+     #(replace-keys {:station_name :station-name
+                     :bikes :available-bikes
+                     :docks :available-docks} %)))))
+
 (defn station-updates [db-spec station-id]
   (->>
    (sql/query db-spec
@@ -56,4 +69,6 @@
                     :bikes :available-bikes
                     :docks :available-docks
                     :status :station-status} %))))
+
+
 
