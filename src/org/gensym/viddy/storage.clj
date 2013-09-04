@@ -1,6 +1,7 @@
 (ns org.gensym.viddy.storage
   (:require [clojure.java.jdbc :as sql]
-            [clojure.java.jdbc.sql :as sqldsl]))
+            [clojure.java.jdbc.sql :as sqldsl]
+            [org.gensym.viddy.divvy-data :as data]))
 
 
 (comment (def db-spec {:connection-uri "jdbc:postgresql://localhost:5432/viddy"}))
@@ -10,7 +11,7 @@
       .getTime
       java.sql.Timestamp.))
 
-(defn replace-keys [keymap m]
+(defn- replace-keys [keymap m]
   (reduce (fn [m [k v]]
             (if (contains? keymap k)
               (assoc m (get keymap k) v)
@@ -70,5 +71,11 @@
                     :docks :available-docks
                     :status :station-status} %))))
 
-
-
+(defn make-divvy-data [db-spec]
+  (reify data/DivvyData
+    (station-info [this station-id]
+      (station-info db-spec station-id))
+    (station-updates [this station-id]
+      (station-updates db-spec station-id))
+    (current-stations [this]
+      (current-stations db-spec))))
