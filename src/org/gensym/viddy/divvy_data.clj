@@ -11,3 +11,9 @@
        (map (fn [record]
               (select-keys record [:execution-time :available-bikes])))
        (timeseries/filter-redundant [:execution-time])))
+
+(defn available-docks [datasource station-id]
+  (->> (station-updates datasource station-id)
+       (map (fn [record]
+              (select-keys record [:execution-time :available-docks])))
+       (timeseries/filter-redundant [:execution-time])))

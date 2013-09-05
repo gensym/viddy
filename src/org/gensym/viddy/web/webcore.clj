@@ -33,6 +33,13 @@
                        :headers {"Content-Type" "application/edn"}
                        :body (print-str
                               (data/available-bikes divvy-source
+                                                    (read-string station-id)))}))
+  (w/regex-matcher #"/available_docks/(\d+)\.edn"
+                    (fn [req station-id]
+                      {:status 200
+                       :headers {"Content-Type" "application/edn"}
+                       :body (print-str
+                              (data/available-docks divvy-source
                                                     (read-string station-id)))}))))
 
 (defn handler [db-spec]
