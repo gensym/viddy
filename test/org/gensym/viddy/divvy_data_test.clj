@@ -56,8 +56,6 @@
            {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
             :available-bikes 3}]
 
-
-
               datasource (reify divvy/DivvyData
                            (station-info [datasource station-id] {})
                            (station-updates [datasource station-id]
