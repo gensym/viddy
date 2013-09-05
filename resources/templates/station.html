@@ -23,15 +23,23 @@
     </div>
 
     <div class="body container">
-      <div>
+
+      <div id="available-bikes">
         <h3>Available Bikes</h3>
         <div class="usage-graph" style="width:600px;height:300px"/>
       </div>
+
+      <div id="available-docks">
+        <h3>Available Docks</h3>
+        <div class="usage-graph" style="width:600px;height:300px"/>
+      </div>
+      
     </div>
   </body>
 
   <script id="data" type="text/javascript">
     var stationId = $("#station-header").data("station-id");
-    update_station_graph(".usage-graph", stationId);
+    update_available_bikes_graph("#available-bikes .usage-graph", stationId);
+    update_available_docks_graph("#available-docks .usage-graph", stationId);
   </script>
 </htmlp>
