@@ -4,10 +4,18 @@
 
 (def station-row-selector [:table.stations-list :> :tbody :> [:tr (enl/nth-of-type 1)]])
 
+(comment  (enl/do->
+                   
+))
+
 (enl/defsnippet stations-table "templates/stations.html" station-row-selector
   [station]
   [:td.station-id] (enl/content (str (:station-id station)))
-  [:td.station-name] (enl/content (:station-name station))
+  [:td.station-name :> :a.station-link] (enl/do->
+                                         (enl/content (:station-name station))
+                                         (enl/set-attr :href
+                                                       (str "/station/"
+                                                            (:station-id station) ".html")))
   [:td.station-status] (enl/content (:station-status station))
   [:td.station-available-bikes-quantity] (enl/content
                                           (str (:available-bikes station)))
@@ -22,5 +30,5 @@
   [station-id station-name]
   [:title] (enl/content station-name)
   [:a#station-header] (enl/do->
-                     (enl/content station-name)
-                     (enl/set-attr :data-station-id station-id)))
+                       (enl/content station-name)
+                       (enl/set-attr :data-station-id station-id)))
