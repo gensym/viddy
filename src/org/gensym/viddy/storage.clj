@@ -73,8 +73,10 @@
                     :status :station-status} %))))
 
 (defn make-divvy-data [db-spec]
-  (let [current-stations
-        (memo/ttl current-stations :ttl/threshold (* 60 1000))]
+  (let [one-minute (* 60 1000)
+        current-stations (memo/ttl current-stations :ttl/threshold one-minute)
+        station-info (memo/ttl station-info :ttl/threshold one-minute)
+        station-updates (memo/ttl station-updates :ttl/threshold one-minute)]
     (reify data/DivvyData
       (clear-caches [this]
         (memo/memo-clear! current-stations))
