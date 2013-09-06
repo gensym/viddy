@@ -63,7 +63,7 @@
 (defn current-stations [db-spec]
   (->>
    (sql/query db-spec
-              ["SELECT id, station_id, station_name, bikes, docks, longitude, latitude, status, execution_time FROM current_stations"])
+              ["SELECT id, station_id, station_name, bikes, docks, longitude, latitude, status, execution_time FROM current_stations ORDER BY station_id"])
    (map 
     #(replace-keys {:station_id :station-id
                    :station_name :station-name
