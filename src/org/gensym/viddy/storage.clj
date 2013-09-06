@@ -1,6 +1,7 @@
 (ns org.gensym.viddy.storage
   (:require [clojure.java.jdbc :as sql]
             [clojure.java.jdbc.sql :as sqldsl]
+            [clojure.core.memoize :as memo]
             [org.gensym.viddy.divvy-data :as data]))
 
 
@@ -72,10 +73,14 @@
                     :status :station-status} %))))
 
 (defn make-divvy-data [db-spec]
-  (reify data/DivvyData
-    (station-info [this station-id]
-      (station-info db-spec station-id))
-    (station-updates [this station-id]
-      (station-updates db-spec station-id))
-    (current-stations [this]
-      (current-stations db-spec))))
+  (let [current-stations
+        (memo/ttl current-stations :ttl/threshold (* 60 60 1000))]
+    (reify data/DivvyData
+      (clear-caches [this]
+        (memo/memo-clear! current-stations))
+      (station-info [this station-id]
+        (station-info db-spec station-id))
+      (station-updates [this station-id]
+        (station-updates db-spec station-id))
+      (current-stations [this]
+        (current-stations db-spec)))))

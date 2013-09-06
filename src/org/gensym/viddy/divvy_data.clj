@@ -2,6 +2,7 @@
   (require [org.gensym.util.timeseries :as timeseries]))
 
 (defprotocol DivvyData
+  (clear-caches [datasource])
   (station-info [datasource station-id])
   (station-updates [datasource station-id])
   (current-stations [datasource]))

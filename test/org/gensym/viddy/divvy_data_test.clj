@@ -25,6 +25,7 @@
                           :available-bikes 9}]
 
           datasource (reify divvy/DivvyData
+                       (clear-caches [datasource])
                        (station-info [datasource station-id] {})
                        (station-updates [datasource station-id]
                          (get {23 from-storage} station-id))
@@ -56,11 +57,12 @@
            {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
             :available-bikes 3}]
 
-              datasource (reify divvy/DivvyData
-                           (station-info [datasource station-id] {})
-                           (station-updates [datasource station-id]
-                             (get {23 from-storage} station-id))
-                           (current-stations [datasource] []))]
+          datasource (reify divvy/DivvyData
+                         (clear-caches [datasource])
+                         (station-info [datasource station-id] {})
+                         (station-updates [datasource station-id]
+                           (get {23 from-storage} station-id))
+                         (current-stations [datasource] []))]
 
       (is (= expected-data (divvy/available-bikes datasource 23))))))
 
@@ -88,6 +90,7 @@
                           :available-docks 9}]
           
           datasource (reify divvy/DivvyData
+                       (clear-caches [datasource])
                        (station-info [datasource station-id] {})
                        (station-updates [datasource station-id]
                          (get {23 from-storage} station-id))
@@ -120,12 +123,10 @@
             :available-docks 3}]
           
           datasource (reify divvy/DivvyData
+                       (clear-caches [datasource])
                        (station-info [datasource station-id] {})
                        (station-updates [datasource station-id]
                          (get {23 from-storage} station-id))
                        (current-stations [datasource] []))]
       
-      (is (= expected-data (divvy/available-docks datasource 23)))
-
-
-      )))
+      (is (= expected-data (divvy/available-docks datasource 23))))))
