@@ -12,9 +12,9 @@ An application that fetches, analyzes, and displays Divvy usage data.
 ### Creating the database
 
 This app depends on a Posgresql instance.The schema is defined at
-[https://github.com/gensym/viddy/blob/master/resources/ddl/viddy.sql]
+https://github.com/gensym/viddy/blob/master/resources/ddl/viddy.sql
 
-Here is one way you can create the database. Before taking this steps,
+Here is one way you can create the database. Before taking these steps,
 you should have a running Postgresql instance.:
 
     createdb viddy
