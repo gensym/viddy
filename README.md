@@ -7,7 +7,7 @@ An application that fetches, analyzes, and displays Divvy usage data.
 ### Prerequsites
 
 * [Leinengen 2](https://github.com/technomancy/leiningen)
-* [Posgresql 9.2.1]((http://www.postgresql.org)) (other versions may work)
+* [Posgresql 9.2.1](http://www.postgresql.org) (other versions may work)
 
 ### Creating the database
 
