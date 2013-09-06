@@ -74,7 +74,7 @@
 
 (defn make-divvy-data [db-spec]
   (let [current-stations
-        (memo/ttl current-stations :ttl/threshold (* 60 60 1000))]
+        (memo/ttl current-stations :ttl/threshold (* 60 1000))]
     (reify data/DivvyData
       (clear-caches [this]
         (memo/memo-clear! current-stations))
