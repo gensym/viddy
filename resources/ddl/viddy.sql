@@ -34,7 +34,7 @@ CREATE TABLE station_updates (
        status varchar(255));
 
 CREATE INDEX station_updates_station_id ON station_updates (station_id);
-
+CREATE INDEX station_updates_execution_id ON station_updates (execution_id);
 
 CREATE VIEW current_stations AS
        SELECT s.id,
@@ -50,3 +50,10 @@ CREATE VIEW current_stations AS
        WHERE s.execution_id = e.id
        AND e.insertion_time = (
            SELECT MAX(e2.insertion_time) FROM station_update_executions e2);
+
+CREATE VIEW station_additions AS
+       SELECT s1.station_id AS station_id, 
+              MIN(e.execution_time) AS addition_time
+       FROM station_updates s1, station_update_executions e
+       WHERE s1.execution_id = e.id 
+       GROUP BY s1.station_id;
