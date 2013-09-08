@@ -13,12 +13,50 @@
    :headers {"Content-Type" "text/html"}
    :body (apply str nodes)})
 
+(def dummy-data
+  [{:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-27T00:38:12.455-00:00"
+    :station-name "Nonexistant Boulevard. & Delirious Drive"
+    :station-id 23
+    :station-status "Not In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}
+   {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+    :station-name "Fake St. & Bogus Ave."
+    :station-id 23
+    :station-status "In Service"}])
+
 (defn router [divvy-source]
   (w/make-router
 
    (w/strings-matcher ["/index.html" "/"]
                       (fn [req] (html-page
-                                (stations/index-html-page))))
+                                (stations/index-html-page dummy-data))))
 
    (w/string-matcher "/stations.html"
                      (fn [req] (html-page
