@@ -15,6 +15,11 @@
 
 (defn router [divvy-source]
   (w/make-router
+
+   (w/strings-matcher ["/index.html" "/"]
+                      (fn [req] (html-page
+                                (stations/index-html-page))))
+
    (w/string-matcher "/stations.html"
                      (fn [req] (html-page
                                (stations/stations-html-page

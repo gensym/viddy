@@ -7,6 +7,14 @@
       [(f req)]
       nil)))
 
+(defn strings-matcher [string-cool f]
+  "f takes no params"
+  (let [s (into #{} string-cool)]
+    (fn [req]
+      (if (s (:uri req))
+        [(f req)]
+        nil))))
+
 (defn regex-matcher [re f]
   (fn [req]
     (if-let [matches (re-matches re (:uri req))]

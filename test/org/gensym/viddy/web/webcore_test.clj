@@ -42,3 +42,21 @@
 
       (is (= 200 (:status response)))
       (is (= java.lang.String (type (:body response)))))))
+
+
+(deftest index-tests
+  (let [datasource (reify divvy/DivvyData
+                       (station-info [datasource station-id] {})
+                       (station-updates [datasource station-id] [])
+                       (current-stations [datasource] []))
+        rfn (webcore/router datasource)]
+    
+    (testing "Should return a result"
+      (let [response (rfn {:uri "/index.html"})]
+        (is (= 200 (:status response)))
+        (is (= java.lang.String (type (:body response))))))
+
+    (testing "Should return a result for the root"
+      (let [response (rfn {:uri "/"})]
+        (is (= 200 (:status response)))
+        (is (= java.lang.String (type (:body response))))))))

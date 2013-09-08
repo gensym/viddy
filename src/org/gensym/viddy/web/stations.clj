@@ -32,3 +32,7 @@
   [:a#station-header] (enl/do->
                        (enl/content station-name)
                        (enl/set-attr :data-station-id station-id)))
+
+
+(enl/deftemplate index-html-page "templates/index.html"
+  [])
