@@ -62,10 +62,7 @@
 
 
 (deftest index-tests
-  (let [datasource (reify divvy/DivvyData
-                       (station-info [datasource station-id] {})
-                       (station-updates [datasource station-id] [])
-                       (current-stations [datasource] []))
+  (let [datasource (make-datasource {})
         rfn (webcore/router datasource)]
     
     (testing "Should return a result"
