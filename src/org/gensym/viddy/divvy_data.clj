@@ -5,7 +5,8 @@
   (clear-caches [datasource])
   (station-info [datasource station-id])
   (station-updates [datasource station-id])
-  (current-stations [datasource]))
+  (current-stations [datasource])
+  (newest-stations [datasource]))
 
 (defn available-bikes [datasource station-id]
   (->> (station-updates datasource station-id)

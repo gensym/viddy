@@ -2,6 +2,25 @@
   (:require [org.gensym.viddy.divvy-data :as divvy])
   (:use clojure.test))
 
+(defn- make-datasource [overrides]
+  (let [defaults {:clear-caches (fn [datasource])
+                  :station-info (fn [datasource station-id] {})
+                  :station-updates (fn [datasource station-id] [])
+                  :current-stations (fn [datasource] [])
+                  :newest-stations (fn [datasource] [])}
+        fns (merge defaults overrides)]
+
+    (reify divvy/DivvyData
+      (clear-caches [datasource] ((:clear-caches fns) datasource))
+      (station-info [datasource station-id]
+        ((:station-info fns) datasource station-id))
+      (station-updates [datasource station-id]
+        ((:station-updates fns) datasource station-id))
+      (current-stations [datasource]
+        ((:current-stations fns) datasource))
+      (newest-stations [datasource]
+        ((:newest-stations fns) datasource)))))
+
 (deftest available-bikes-tests
   (testing "Should filter extraneous keys"
     (let [expected-data
@@ -24,12 +43,9 @@
                          {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
                           :available-bikes 9}]
 
-          datasource (reify divvy/DivvyData
-                       (clear-caches [datasource])
-                       (station-info [datasource station-id] {})
-                       (station-updates [datasource station-id]
-                         (get {23 from-storage} station-id))
-                       (current-stations [datasource] []))]
+          datasource (make-datasource {:station-updates
+                                       (fn [datasource station-id]
+                                         (get {23 from-storage} station-id))})]
 
       (is (= expected-data (divvy/available-bikes datasource 23)))))
 
@@ -57,14 +73,28 @@
            {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
             :available-bikes 3}]
 
-          datasource (reify divvy/DivvyData
-                         (clear-caches [datasource])
-                         (station-info [datasource station-id] {})
-                         (station-updates [datasource station-id]
-                           (get {23 from-storage} station-id))
-                         (current-stations [datasource] []))]
+          datasource (make-datasource {:station-updates
+                                       (fn [datasource station-id]
+                                         (get {23 from-storage} station-id))})]
 
       (is (= expected-data (divvy/available-bikes datasource 23))))))
+
+(deftest newest-stations-tests
+  (testing "Should return newest stations"
+    (let [expected-data
+          (list
+           {:execution-time #inst "2013-08-28T00:38:12.455-00:00"
+            :station-name "Fake St. & Bogus Ave."
+            :station-id 23
+            :station-status "In Service"}
+           {:execution-time #inst "2013-08-27T00:38:12.455-00:00"
+            :station-name "Nonexistant Boulevard. & Delirious Drive"
+            :station-id 23
+            :station-status "Not In Service"})
+          datasource (make-datasource {:newest-stations
+                                       (fn [datasource] expected-data)})]
+
+      (is (= expected-data (divvy/newest-stations datasource))))))
 
 
 (deftest available-docks-tests
@@ -88,13 +118,10 @@
                           :execution-time #inst "2013-08-16T21:39:01.000-00:00"}
                          {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
                           :available-docks 9}]
-          
-          datasource (reify divvy/DivvyData
-                       (clear-caches [datasource])
-                       (station-info [datasource station-id] {})
-                       (station-updates [datasource station-id]
-                         (get {23 from-storage} station-id))
-                       (current-stations [datasource] []))]
+
+          datasource (make-datasource {:station-updates
+                                       (fn [datasource station-id]
+                                         (get {23 from-storage} station-id))})]
       
       (is (= expected-data (divvy/available-docks datasource 23)))))
 
@@ -121,12 +148,9 @@
             :execution-time #inst "2013-08-17T12:00:13.123-00:00"}
            {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
             :available-docks 3}]
-          
-          datasource (reify divvy/DivvyData
-                       (clear-caches [datasource])
-                       (station-info [datasource station-id] {})
-                       (station-updates [datasource station-id]
-                         (get {23 from-storage} station-id))
-                       (current-stations [datasource] []))]
+
+          datasource (make-datasource {:station-updates
+                                       (fn [datasource station-id]
+                                         (get {23 from-storage} station-id))})]
       
       (is (= expected-data (divvy/available-docks datasource 23))))))

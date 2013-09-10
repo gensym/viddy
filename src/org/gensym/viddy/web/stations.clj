@@ -25,7 +25,7 @@
   [:.recently-added-stations :> :table :> :tbody :> [:tr (enl/nth-of-type 1)]]
   [station]
   
-  [:td.addition-time] (enl/content (str (:execution-time station)))
+  [:td.addition-time] (enl/content (str (:addition-time station)))
   [:td.station-name :> :a.station-link] (enl/do->
                                          (enl/content (:station-name station))
                                          (enl/set-attr :href

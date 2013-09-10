@@ -63,7 +63,11 @@
 (defn current-stations [db-spec]
   (->>
    (sql/query db-spec
-              ["SELECT id, station_id, station_name, bikes, docks, longitude, latitude, status, execution_time FROM current_stations ORDER BY station_id"])
+              [(str "SELECT id, station_id, "
+                    "       station_name, bikes, "
+                    "       docks, longitude, latitude, "
+                    "       status, execution_time "
+                    "FROM current_stations ORDER BY station_id")])
    (map 
     #(replace-keys {:station_id :station-id
                    :station_name :station-name
@@ -72,9 +76,27 @@
                     :docks :available-docks
                     :status :station-status} %))))
 
+(defn newest-stations [db-spec]
+  (->>
+   (sql/query db-spec
+              [(str "SELECT s.station_id AS station_id, "
+                    "       a.addition_time AS addition_time, "
+                    "       s.station_name AS station_name, "
+                    "       s.status AS station_status "
+                    "FROM station_additions a "
+                    "LEFT JOIN current_stations s "
+                    "ON s.station_id = a.station_id "
+                    "ORDER BY a.addition_time DESC LIMIT 10")])
+   (map
+    #(replace-keys {:station_id :station-id
+                    :station_name :station-name
+                    :addition_time :addition-time
+                    :station_status :station-status} %))))
+
 (defn make-divvy-data [db-spec]
   (let [one-minute (* 60 1000)
         current-stations (memo/ttl current-stations :ttl/threshold one-minute)
+
         station-info (memo/ttl station-info :ttl/threshold one-minute)
         station-updates (memo/ttl station-updates :ttl/threshold one-minute)]
     (reify data/DivvyData
@@ -85,4 +107,6 @@
       (station-updates [this station-id]
         (station-updates db-spec station-id))
       (current-stations [this]
-        (current-stations db-spec)))))
+        (current-stations db-spec))
+      (newest-stations [this]
+        (newest-stations db-spec)))))
