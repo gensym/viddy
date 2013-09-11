@@ -9,6 +9,11 @@ function update_available_bikes_graph(graph_selector, station_id ) {
       });
       
       var options = {
+        series: {
+          lines: {
+            steps:true
+          }
+        },
         xaxis: {
           mode: "time",
         },
@@ -34,6 +39,11 @@ function update_available_docks_graph(graph_selector, station_id ) {
       });
 
       var options = {
+        series: {
+          lines: {
+            steps:true
+          }
+        },
         xaxis: {
           mode: "time",
         },
