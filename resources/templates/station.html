@@ -9,6 +9,8 @@
             src="/js/jquery.flot.js"></script>
     <script language="javascript" type="text/javascript" 
             src="/js/jquery.flot.time.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/jquery.flot.fillbetween.js"></script>
     <script language="javascript" type="text/javascript"
             src="/js/jsedn.js"></script>
     <script language="javascript" type="text/javascript"
@@ -23,6 +25,11 @@
     </div>
 
     <div class="body container">
+
+      <div id="available-bikes-percentiles">
+        <h3>Available Bikes Summary</h3>
+        <div class="usage-graph" style="width:600px;height:300px"/>
+      </div>
 
       <div id="available-bikes">
         <h3>Available Bikes</h3>
@@ -39,6 +46,7 @@
 
   <script id="data" type="text/javascript">
     var stationId = $("#station-header").data("station-id");
+    update_summary_bikes_graph("#available-bikes-percentiles .usage-graph", stationId);
     update_available_bikes_graph("#available-bikes .usage-graph", stationId);
     update_available_docks_graph("#available-docks .usage-graph", stationId);
   </script>

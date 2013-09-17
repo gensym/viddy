@@ -5,7 +5,6 @@
 (def station-row-selector
   [:table.stations-list :> :tbody :> [:tr (enl/nth-of-type 1)]])
 
-
 (enl/defsnippet stations-table "templates/stations.html" station-row-selector
   [station]
   [:td.station-id] (enl/content (str (:station-id station)))
@@ -44,9 +43,7 @@
                        (enl/content station-name)
                        (enl/set-attr :data-station-id station-id)))
 
-
 (enl/deftemplate index-html-page "templates/index.html"
   [stations]
   [:.recently-added-stations :> :table :> :tbody]
   (enl/content  (map #(station-additions-table %) stations)))
-
