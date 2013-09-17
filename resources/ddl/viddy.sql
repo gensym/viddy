@@ -18,7 +18,6 @@ CREATE TRIGGER station_update_executions_insertion_trigger
 BEFORE INSERT ON station_update_executions FOR EACH ROW
 EXECUTE PROCEDURE set_insertion_time_timestamp();
 
-
 CREATE INDEX station_update_executions_insertion_time 
 ON station_update_executions(insertion_time);
 
@@ -36,7 +35,7 @@ CREATE TABLE station_updates (
 CREATE INDEX station_updates_station_id ON station_updates (station_id);
 CREATE INDEX station_updates_execution_id ON station_updates (execution_id);
 
-CREATE VIEW current_stations AS
+CREATE MATERIALIZED VIEW current_stations AS
        SELECT s.id,
               s.station_id, 
               s.station_name,
@@ -51,7 +50,7 @@ CREATE VIEW current_stations AS
        AND e.insertion_time = (
            SELECT MAX(e2.insertion_time) FROM station_update_executions e2);
 
-CREATE VIEW station_additions AS
+CREATE MATERIALIZED  VIEW station_additions AS
        SELECT s1.station_id AS station_id, 
               MIN(e.execution_time) AS addition_time
        FROM station_updates s1, station_update_executions e

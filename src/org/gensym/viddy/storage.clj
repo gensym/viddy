@@ -31,6 +31,13 @@
                (assoc row "execution_id" execution-id))
              station-updates)))))
 
+(defn refresh-current-stations [db-spec]
+  (sql/execute! db-spec ["REFRESH MATERIALIZED VIEW current_stations"]))
+
+(defn refresh-station-addtions [db-spec]
+  (sql/execute! db-spec ["REFRESH MATERIALIZED VIEW station_additions"]))
+
+
 (defn station-info [db-spec station-id]
   (first
    (->>

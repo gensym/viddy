@@ -7,7 +7,7 @@ An application that fetches, analyzes, and displays Divvy usage data. It current
 ### Prerequsites
 
 * [Leinengen 2](https://github.com/technomancy/leiningen)
-* [Posgresql 9.2.1](http://www.postgresql.org) (other versions may work)
+* [Posgresql 9.3](http://www.postgresql.org) (requires 9.3 because Viddy makes use of materialized views)
 
 ### Creating the database
 
