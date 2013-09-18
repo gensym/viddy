@@ -90,9 +90,8 @@
                     "       a.addition_time AS addition_time, "
                     "       s.station_name AS station_name, "
                     "       s.status AS station_status "
-                    "FROM station_additions a "
-                    "LEFT JOIN current_stations s "
-                    "ON s.station_id = a.station_id "
+                    "FROM station_additions a, current_stations s "
+                    "WHERE s.station_id = a.station_id "
                     "ORDER BY a.addition_time DESC LIMIT 10")])
    (map
     #(replace-keys {:station_id :station-id
