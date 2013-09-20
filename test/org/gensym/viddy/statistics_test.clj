@@ -2,16 +2,24 @@
   (:require [org.gensym.viddy.statistics :as stats])
   (:use clojure.test))
 
-(deftest should-ss
-  (testing "A thing"
-    (let [expected-data])
-    (is (= 3 2))))
-
-(deftest data-bucketing
-  (testing "Should bucket data"
-    (let [expected {0 [0 3 6 9]
-                    1 [1 4 7 10]
-                    2 [2 5 8 11]}]
-
-      (is (= expected
-             (stats/bucket #(mod % 3) (range 12)))))))
+(deftest as-percentiles
+  (testing "Should split simple numbers into percentiles"
+    (let [expected {0.1 9
+                    0.3 29
+                    0.5 49
+                    0.8 79
+                    0.9 89}
+          inputs (range 100)
+          actual (stats/percentiles [0.1 0.3 0.5 0.8 0.9] inputs)]
+      (is (= expected actual))))
+  (testing "Should work with small collections"
+    (let [exected {0.1 1
+                   0.3 1
+                   0.5 1
+                   0.51 2
+                   0.8 2
+                   0.9 2
+                   1.0 2}
+          inputs [1 2]
+          actual (stats/percentiles [0.1 0.3 0.5 0.51 0.8 0.9 1.0] inputs)]
+      (is (= exected actual)))))
