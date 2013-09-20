@@ -22,4 +22,9 @@
                    1.0 2}
           inputs [1 2]
           actual (stats/percentiles [0.1 0.3 0.5 0.51 0.8 0.9 1.0] inputs)]
-      (is (= exected actual)))))
+      (is (= exected actual))))
+  (testing "Should work with an empty collection"
+    (let [expected {0.1 0
+                    0.5 0
+                    0.9 0}]
+      (is (= expected (stats/percentiles [0.1 0.5 0.9] []))))))
