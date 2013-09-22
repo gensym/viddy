@@ -6,8 +6,7 @@
     (if (= 0 c)
       0
       (nth coll (max 0 (dec
-                        (int (Math/ceil (* percentile c))))))))
-)
+                        (int (Math/ceil (* percentile c)))))))))
 
 (defn percentiles [keys coll]
   (let [coll (vec coll)]
@@ -15,6 +14,13 @@
      (fn [m v]
        (assoc m v (percentile v coll)))
      {} keys)))
+
+(defn analyse-percentages [group-by-fn value-fn percentile-keys coll]
+  (->> coll
+       (group-by group-by-fn)
+       (map (fn [[k v]] [k (percentiles percentile-keys
+                                       (sort (map value-fn v)))]))
+       (into {})))
 
 
 
