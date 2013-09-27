@@ -22,5 +22,11 @@
                                        (sort (map value-fn v)))]))
        (into {})))
 
-
+(defn rotate-keys [m]
+  (apply merge-with merge
+         (map (fn [[k v]]
+                (into {}
+                      (map (fn [[kk vv]]
+                             [kk {k vv}]) v)))
+              m)))
 
