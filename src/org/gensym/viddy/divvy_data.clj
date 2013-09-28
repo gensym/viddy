@@ -23,12 +23,12 @@
 
 (defn available-bikes-percentiles [datasource
                                    station-id
+                                   include-datum?
                                    datum->value
                                    datum->key
-                                   include-key?
                                    percentiles]
   (->> (station-updates datasource station-id)
-       (filter (comp include-key? datum->key))
+       (filter include-datum?)
        (map (fn [rec] [(datum->key rec) (datum->value rec)]))
        (stats/analyse-percentages first second percentiles)
        (stats/rotate-keys))

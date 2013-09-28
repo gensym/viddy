@@ -216,71 +216,18 @@
                                        (fn [datasource station-id]
                                          (get {23 from-storage} station-id))})
 
+          to-key #(time-format/unparse
+                   (time-format/formatter "EEEE")
+                   (time-coerce/from-date (:execution-time %)))
+
           actual-data (divvy/available-bikes-percentiles
                        datasource
                        23
+                       (comp #{"Monday" "Tuesday" "Wednesday"} to-key)
                        :available-bikes
-                       #(time-format/unparse
-                         (time-format/formatter "EEEE")
-                         (time-coerce/from-date (:execution-time %)))
-                       #{"Monday" "Tuesday" "Wednesday"}
+                       to-key
                        [0.25 0.5 0.75])]
 
       (is (= actual-data expected-data)))))
 
 
-(comment (def from-storage [{:execution-time #inst "2013-08-26T00:38:12.455-00:00"
-                         :longitude "whocares"
-                         :available-bikes 23}
-                        
-                        {:available-bikes 32,
-                         :available-docks 999,
-                         :longitude -87.637715,
-                         :latitude 41.902924,
-                         :station-status "In Service",
-                         :execution-time #inst "2013-08-26T21:39:01.000-00:00"}
-
-                        {:execution-time #inst "2013-08-29T01:58:12.455-00:00"
-                         :available-bikes 9999}
-
-                        {:execution-time #inst "2013-08-25T01:58:12.455-00:00"
-                         :available-bikes 9999}
-
-                        {:execution-time #inst "2013-08-27T01:58:12.455-00:00"
-                         :available-bikes 99}
-
-                        {:execution-time #inst "2013-08-26T01:58:12.455-00:00"
-                         :available-bikes 12}
-
-                        {:execution-time #inst "2013-08-27T01:58:12.455-00:00"
-                         :available-bikes 42}
-
-                        {:execution-time #inst "2013-08-26T01:58:12.455-00:00"
-                         :available-bikes 10}
-
-                        {:execution-time #inst "2013-08-26T01:58:12.455-00:00"
-                         :available-bikes 92}
-
-                        {:execution-time #inst "2013-08-28T01:58:12.455-00:00"
-                         :available-bikes 18}
-                        
-                        {:execution-time #inst "2013-08-26T01:58:12.455-00:00"
-                         :available-bikes 13}
-
-                        {:execution-time #inst "2013-08-27T01:58:12.455-00:00"
-                         :available-bikes 16}
-
-                        {:execution-time #inst "2013-08-27T01:58:12.455-00:00"
-                         :available-bikes 67}]))
-
-(comment (pprint (divvy/available-bikes-percentiles
-                                           (make-datasource {:station-updates
-                                                             (fn [datasource station-id]
-                                                                (get {23 from-storage} station-id))})
-                                           23
-                                           :available-bikes
-                                           #(time-format/unparse
-                                             (time-format/formatter "EEEE")
-                                             (time-coerce/from-date (:execution-time %)))
-                                           #{"Monday" "Tuesday" "Wednesday"}
-                                           [0.25 0.5 0.75])))
