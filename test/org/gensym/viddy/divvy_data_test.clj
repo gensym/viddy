@@ -5,7 +5,7 @@
 (defn- make-datasource [overrides]
   (let [defaults {:clear-caches (fn [datasource])
                   :station-info (fn [datasource station-id] {})
-                  :station-updates (fn [datasource station-id] [])
+                  :station-updates (fn [datasource station-id from-date to-date] [])
                   :current-stations (fn [datasource] [])
                   :newest-stations (fn [datasource] [])}
         fns (merge defaults overrides)]
@@ -14,8 +14,8 @@
       (clear-caches [datasource] ((:clear-caches fns) datasource))
       (station-info [datasource station-id]
         ((:station-info fns) datasource station-id))
-      (station-updates [datasource station-id]
-        ((:station-updates fns) datasource station-id))
+      (station-updates [datasource station-id from-date to-date]
+        ((:station-updates fns) datasource station-id from-date to-date))
       (current-stations [datasource]
         ((:current-stations fns) datasource))
       (newest-stations [datasource]
@@ -44,10 +44,10 @@
                           :available-bikes 9}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 from-storage} station-id))})]
 
-      (is (= expected-data (divvy/available-bikes datasource 23)))))
+      (is (= expected-data (divvy/available-bikes datasource 23 #inst "2013-07-01" #inst "2013-10-01")))))
 
   (testing "Should filter duplicates"
     (let [expected-data
@@ -74,10 +74,10 @@
             :available-bikes 3}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 from-storage} station-id))})]
 
-      (is (= expected-data (divvy/available-bikes datasource 23))))))
+      (is (= expected-data (divvy/available-bikes datasource 23 #inst "2013-07-01" #inst "2013-10-01"))))))
 
 (deftest newest-stations-tests
   (testing "Should return newest stations"
@@ -120,10 +120,10 @@
                           :available-docks 9}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 from-storage} station-id))})]
       
-      (is (= expected-data (divvy/available-docks datasource 23)))))
+      (is (= expected-data (divvy/available-docks datasource 23 #inst "2013-07-01" #inst "2013-10-01")))))
 
   (testing "Should filter duplicates"
     (let [expected-data
@@ -150,7 +150,7 @@
             :available-docks 3}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 from-storage} station-id))})]
       
-      (is (= expected-data (divvy/available-docks datasource 23))))))
+      (is (= expected-data (divvy/available-docks datasource 23 #inst "2013-07-01" #inst "2013-10-01"))))))

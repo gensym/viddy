@@ -6,7 +6,7 @@
 (defn- make-datasource [overrides]
   (let [defaults {:clear-caches (fn [datasource])
                   :station-info (fn [datasource station-id] {})
-                  :station-updates (fn [datasource station-id] [])
+                  :station-updates (fn [datasource station-id from-date to-date] [])
                   :current-stations (fn [datasource] [])
                   :newest-stations (fn [datasource] [])}
         fns (merge defaults overrides)]
@@ -15,8 +15,8 @@
       (clear-caches [datasource] ((:clear-caches fns) datasource))
       (station-info [datasource station-id]
         ((:station-info fns) datasource station-id))
-      (station-updates [datasource station-id]
-        ((:station-updates fns) datasource station-id))
+      (station-updates [datasource station-id from-date to-date]
+        ((:station-updates fns) datasource station-id from-date to-date))
       (current-stations [datasource]
         ((:current-stations fns) datasource))
       (newest-stations [datasource]
@@ -32,7 +32,7 @@
                       :available-bikes 9}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 bike-data} station-id))})
 
           rfn (webcore/router datasource)
@@ -51,7 +51,7 @@
                       :available-docks 9}]
 
           datasource (make-datasource {:station-updates
-                                       (fn [datasource station-id]
+                                       (fn [datasource station-id from-date to-date]
                                          (get {23 dock-data} station-id))})
           
           rfn (webcore/router datasource)

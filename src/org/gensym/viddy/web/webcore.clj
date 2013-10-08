@@ -6,7 +6,8 @@
    [org.gensym.util.webroutes :as w]
    [ring.middleware.params :as params]
    [ring.middleware.file :as file]
-   [ring.middleware.file-info :as file-info]))
+   [ring.middleware.file-info :as file-info]
+   [clj-time.core :as time]))
 
 (defn- html-page [nodes]
   {:status 200
@@ -35,18 +36,26 @@
                                                   (:station-name station-info))))))
    (w/regex-matcher #"/available_bikes/(\d+)\.edn"
                     (fn [req station-id]
-                      {:status 200
-                       :headers {"Content-Type" "application/edn"}
-                       :body (print-str
-                              (data/available-bikes divvy-source
-                                                    (read-string station-id)))}))
+                      (let [to-date (time/now)
+                            from-date (time/minus- to-date (time/months 1))]
+                        {:status 200
+                         :headers {"Content-Type" "application/edn"}
+                         :body (print-str
+                                (data/available-bikes divvy-source
+                                                      (read-string station-id)
+                                                      (.toDate from-date)
+                                                      (.toDate to-date)))})))
   (w/regex-matcher #"/available_docks/(\d+)\.edn"
-                    (fn [req station-id]
-                      {:status 200
-                       :headers {"Content-Type" "application/edn"}
-                       :body (print-str
-                              (data/available-docks divvy-source
-                                                    (read-string station-id)))}))))
+                   (fn [req station-id]
+                     (let [to-date (time/now)
+                           from-date (time/minus- to-date (time/months 1))]
+                       {:status 200
+                        :headers {"Content-Type" "application/edn"}
+                        :body (print-str
+                               (data/available-docks divvy-source
+                                                     (read-string station-id)
+                                                     (.toDate from-date)
+                                                     (.toDate to-date)))})))))
 
 (defn handler [db-spec]
   (let [datasource (storage/make-divvy-data db-spec)]

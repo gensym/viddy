@@ -51,7 +51,7 @@
                      :bikes :available-bikes
                      :docks :available-docks} %)))))
 
-(defn station-updates [db-spec station-id]
+(defn station-updates [db-spec station-id from-date to-date]
   (->>
    (sql/query db-spec
               [(str "SELECT s.bikes, s.docks, "
@@ -59,8 +59,12 @@
                     "       e.execution_time "
                     "FROM station_updates s, station_update_executions e "
                     "WHERE s.execution_id = e.id AND s.station_id = ? "
+                    "AND e.execution_time >= ? "
+                    "AND e.execution_time <= ? "
                     "ORDER BY e.insertion_time"),
-               station-id])
+               station-id
+               (date->sqldate from-date)
+               (date->sqldate to-date)])
    (map
     #(replace-keys {:execution_time :execution-time
                     :bikes :available-bikes
@@ -110,8 +114,8 @@
         (memo/memo-clear! current-stations))
       (station-info [this station-id]
         (station-info db-spec station-id))
-      (station-updates [this station-id]
-        (station-updates db-spec station-id))
+      (station-updates [this station-id from-date to-date]
+        (station-updates db-spec station-id from-date to-date))
       (current-stations [this]
         (current-stations db-spec))
       (newest-stations [this]

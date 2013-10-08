@@ -21,6 +21,9 @@ EXECUTE PROCEDURE set_insertion_time_timestamp();
 CREATE INDEX station_update_executions_insertion_time 
 ON station_update_executions(insertion_time);
 
+CREATE INDEX station_update_executions_execution_time 
+ON station_update_executions(execution_time);
+
 CREATE TABLE station_updates (
        id serial primary key,
        execution_id int references station_update_executions,
@@ -32,8 +35,8 @@ CREATE TABLE station_updates (
        latitude float,
        status varchar(255));
 
-CREATE INDEX station_updates_station_id ON station_updates (station_id);
-CREATE INDEX station_updates_execution_id ON station_updates (execution_id);
+CREATE INDEX station_updates_station_id ON station_updates USING hash (station_id);
+CREATE INDEX station_updates_execution_id ON station_updates USING hash (execution_id);
 
 CREATE MATERIALIZED VIEW current_stations AS
        SELECT s.id,
