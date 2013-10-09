@@ -5,7 +5,6 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/algo.generic "0.1.1"]
                  [org.clojure/tools.logging "0.2.6"]
                  [org.clojure/core.memoize "0.5.6"]
                  [ring/ring-core "1.2.0"]
@@ -14,7 +13,7 @@
                  [enlive "1.1.1"]
                  [hiccup "1.0.4"]
                  [clj-http "0.7.6"]
-                 [clj-time "0.6.0"]
+                 [clj-time "0.5.1"]
                  [org.clojure/data.json "0.2.2"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [postgresql "9.1-901.jdbc4"]]
