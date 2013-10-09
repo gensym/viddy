@@ -40,22 +40,42 @@
                             from-date (time/minus- to-date (time/months 1))]
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
-                         :body (print-str
+                         :body (pr-str
                                 (data/available-bikes divvy-source
                                                       (read-string station-id)
                                                       (.toDate from-date)
                                                       (.toDate to-date)))})))
-  (w/regex-matcher #"/available_docks/(\d+)\.edn"
-                   (fn [req station-id]
-                     (let [to-date (time/now)
-                           from-date (time/minus- to-date (time/months 1))]
-                       {:status 200
-                        :headers {"Content-Type" "application/edn"}
-                        :body (print-str
-                               (data/available-docks divvy-source
-                                                     (read-string station-id)
-                                                     (.toDate from-date)
-                                                     (.toDate to-date)))})))))
+
+   (w/regex-matcher #"/available_docks/(\d+)\.edn"
+                    (fn [req station-id]
+                      (let [to-date (time/now)
+                            from-date (time/minus- to-date (time/months 1))]
+                        {:status 200
+                         :headers {"Content-Type" "application/edn"}
+                         :body (print-str
+                                (data/available-docks divvy-source
+                                                      (read-string station-id)
+                                                      (.toDate from-date)
+                                                      (.toDate to-date)))})))
+
+   (w/regex-matcher #"/available_bikes/weekdays/(\d+)\.edn"
+                    (fn [req station-id]
+                      (let [to-date (time/now)
+                            from-date (time/minus- to-date (time/months 1))]
+                        {:status 200
+                         :headers {"Content-Type" "application/edn"}
+                         :body  (pr-str
+                                 (data/available-bikes-weekdays
+                                  divvy-source
+                                  (read-string station-id)
+                                  (.toDate from-date)
+                                  (.toDate to-date)))})))))
+
+
+
+
+            
+                                                    
 
 (defn handler [db-spec]
   (let [datasource (storage/make-divvy-data db-spec)]
