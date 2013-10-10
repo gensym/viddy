@@ -57,8 +57,11 @@
   </body>
 
   <script id="data" type="text/javascript">
+    var stationId = $("#station-header").data("station-id");
+
     update_summary_bikes_graph("#available-bikes-percentiles .usage-graph", stationId);
     update_available_bikes_graph("#available-bikes .usage-graph", stationId);
     update_available_docks_graph("#available-docks .usage-graph", stationId);
+
   </script>
 </htmlp>
