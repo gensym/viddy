@@ -9,6 +9,8 @@
             src="/js/jquery.flot.js"></script>
     <script language="javascript" type="text/javascript" 
             src="/js/jquery.flot.time.js"></script>
+    <script language="javascript" type="text/javascript" 
+            src="/js/jquery.flot.fillbetween.js"></script>
     <script language="javascript" type="text/javascript"
             src="/js/jsedn.js"></script>
     <script language="javascript" type="text/javascript"
@@ -23,6 +25,15 @@
     </div>
 
     <div class="body container">
+
+      <div id="available-bikes-percentiles">
+        <h3>Weekday Usage Averages</h3>
+        <div class="usage-graph" style="width:600px;height:300px">
+          <div style="margin-top:50px;margin-left:10px">
+            <img src="/images/spinner.gif"/>
+          </div>
+        </div>
+      </div>
 
       <div id="available-bikes">
         <h3>Available Bikes</h3>
@@ -46,8 +57,21 @@
   </body>
 
   <script id="data" type="text/javascript">
+    function getParameterByName(name) {
+       var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
+
     var stationId = $("#station-header").data("station-id");
+
+    if (!getParameterByName('percentiles')) {
+      $("#available-bikes-percentiles").hide();
+    } else {
+        update_summary_bikes_graph("#available-bikes-percentiles .usage-graph", stationId);
+    }
+    
     update_available_bikes_graph("#available-bikes .usage-graph", stationId);
     update_available_docks_graph("#available-docks .usage-graph", stationId);
+
   </script>
 </htmlp>
