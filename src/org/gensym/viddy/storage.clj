@@ -107,8 +107,7 @@
   (let [one-minute (* 60 1000)
         current-stations (memo/ttl current-stations :ttl/threshold one-minute)
         newest-stations (memo/ttl newest-stations :ttl/threshold one-minute)
-        station-info (memo/ttl station-info :ttl/threshold one-minute)
-        station-updates (memo/ttl station-updates :ttl/threshold one-minute)]
+        station-info (memo/ttl station-info :ttl/threshold one-minute)]
     (reify data/DivvyData
       (clear-caches [this]
         (memo/memo-clear! current-stations))

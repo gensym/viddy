@@ -7,6 +7,7 @@
    [ring.middleware.params :as params]
    [ring.middleware.file :as file]
    [ring.middleware.file-info :as file-info]
+   [clojure.tools.logging :as log]
    [clj-time.core :as time]))
 
 (defn- html-page [nodes]
@@ -72,7 +73,12 @@
                                   (.toDate to-date)))})))))
 
 
-
+(defn log-request [handler]
+  (fn [request]
+    (let [start (java.lang.System/currentTimeMillis)
+          response (handler request)]
+      (log/info "Processing request for" (:uri request) "took" (- (java.lang.System/currentTimeMillis) start) "ms")
+      response)))
 
             
                                                     
@@ -80,5 +86,6 @@
 (defn handler [db-spec]
   (let [datasource (storage/make-divvy-data db-spec)]
     (-> (params/wrap-params (router datasource))
+        (log-request)
         (file/wrap-file "resources/public")
         (file-info/wrap-file-info))))
