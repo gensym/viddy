@@ -22,5 +22,7 @@
   :aliases { "webrun"
              ["trampoline" "run" "-m" "org.gensym.viddy.webrun"]
              "workerrun"
-             ["trampoline" "run" "-m" "org.gensym.viddy.workerrun"]}
+             ["trampoline" "run" "-m" "org.gensym.viddy.workerrun"]
+             "benchmark"
+             ["trampoline" "run" "-m" "org.gensym.viddy.benchmark"]}
   :main org.gensym.viddy.run)
