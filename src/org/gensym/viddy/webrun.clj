@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [org.gensym.viddy.web.webcore :as webapp]
             [org.gensym.sample.jetty :as jetty]
-            [org.gensym.viddy.dbconnection :as dbconn]))
+            [org.gensym.viddy.dbconnection :as dbconn] :reload-all))
 
 (defn start [port db-spec]
   (let [server (jetty/make-jetty-server (webapp/handler db-spec) port)]

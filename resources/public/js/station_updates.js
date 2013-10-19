@@ -27,9 +27,10 @@ function to_data_series_percentiles(edn_percentiles) {
             return r; }));
 }
 
-function update_summary_bikes_graph(graph_selector, station_id) {
-
-  $.ajax("/available_bikes/weekdays/" + station_id + ".edn").success(
+function update_summary_bikes_graph(graph_selector, station_id, from_date, to_date) {
+  var url = "/available_bikes/weekdays/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
+  console.log("Requesting " + url)
+  $.ajax(url).success(
     function(e) {
       var percentiles = to_data_series_percentiles(e);
       console.log(percentiles);

@@ -8,12 +8,22 @@
    [ring.middleware.file :as file]
    [ring.middleware.file-info :as file-info]
    [clojure.tools.logging :as log]
-   [clj-time.core :as time]))
+   [clj-time.core :as time]
+   [clj-time.format :as time-format]))
+
+(def date-time-format "YYYY-MM-dd'T'HH:mm:ssZ")
+(def time-formatter (time-format/formatter date-time-format))
+
 
 (defn- html-page [nodes]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (apply str nodes)})
+
+(defn- date-or-default [date-str-or-nil default-thunk]
+  (if (empty? date-str-or-nil)
+    (default-thunk)
+    (time-format/parse time-formatter date-str-or-nil)))
 
 (defn router [divvy-source]
   (w/make-router
@@ -61,8 +71,10 @@
 
    (w/regex-matcher #"/available_bikes/weekdays/(\d+)\.edn"
                     (fn [req station-id]
-                      (let [to-date (time/now)
-                            from-date (time/minus- to-date (time/months 1))]
+                      (let [to-date (date-or-default (get (:params req) "to_date") #(time/now))
+                            from-date (date-or-default (get (:params req) "from_date") #(time/minus- to-date (time/months 1)))]
+                        (log/info "Params were " (:params req))
+                        (log/info "Getting bike usages from " from-date "to" to-date)
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body  (pr-str

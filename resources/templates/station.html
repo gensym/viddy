@@ -16,6 +16,8 @@
     <script language="javascript" type="text/javascript"
             src="/js/underscore-min.js"></script>
     <script language="javascript" type="text/javascript" 
+            src="/js/moment.min.js"></script>
+    <script language="javascript" type="text/javascript" 
             src="/js/station_updates.js"></script>
             
   </head>
@@ -59,9 +61,13 @@
   <script id="data" type="text/javascript">
     var stationId = $("#station-header").data("station-id");
 
-    update_summary_bikes_graph("#available-bikes-percentiles .usage-graph", stationId);
-    update_available_bikes_graph("#available-bikes .usage-graph", stationId);
-    update_available_docks_graph("#available-docks .usage-graph", stationId);
+    var date_format = "YYYY-MM-DDTHH:mm:ssZ";
+    var from_time = moment().subtract('months', 1).format(date_format);
+    var to_time = moment().format(date_format);
+
+    update_summary_bikes_graph("#available-bikes-percentiles .usage-graph", stationId, from_time, to_time);
+    update_available_bikes_graph("#available-bikes .usage-graph", stationId, from_time, to_time);
+    update_available_docks_graph("#available-docks .usage-graph", stationId, from_time, to_time);
 
   </script>
 </htmlp>
