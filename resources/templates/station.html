@@ -6,6 +6,8 @@
     <script language="javascript" type="text/javascript" 
             src="/js/jquery.js"></script>
     <script language="javascript" type="text/javascript" 
+            src="/js/bootstrap.min.js"></script>
+    <script language="javascript" type="text/javascript" 
             src="/js/jquery.flot.js"></script>
     <script language="javascript" type="text/javascript" 
             src="/js/jquery.flot.time.js"></script>
@@ -25,37 +27,45 @@
     <div class="navbar">
       <a id="station-header" class="navbar-brand" href="#">Station name here</a>
     </div>
-
+    
     <div class="body container">
 
-      <div id="available-bikes-percentiles">
-        <h3>Weekday Available Bikes Averages</h3>
-        <div class="usage-graph" style="width:600px;height:300px">
-          <div style="margin-top:50px;margin-left:10px">
-            <img src="/images/spinner.gif"/>
-          </div>
-        </div>
-      </div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-pills">
+        <li class="active"><a href="#available-bikes-percentiles" data-toggle="pill">Available Bikes Averages</a></li>
+        <li><a href="#available-bikes" data-toggle="pill">Available Bikes History</a></li>
+        <li><a href="#available-docks" data-toggle="pill">Available Docks History</a></li>
+      </ul>
 
-      <div id="available-bikes">
-        <h3>Available Bikes</h3>
-        <div class="usage-graph" style="width:600px;height:300px">
-          <div style="margin-top:50px;margin-left:10px">
-            <img src="/images/spinner.gif"/>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div class="tab-pane active" id="available-bikes-percentiles">
+          <div class="usage-graph" style="width:600px;height:300px">
+            <div style="margin-top:50px;margin-left:10px">
+              <img src="/images/spinner.gif"/>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div id="available-docks">
-        <h3>Available Docks</h3>
-        <div class="usage-graph" style="width:600px;height:300px">
-          <div style="margin-top:50px;margin-left:10px">
-            <img src="/images/spinner.gif"/>
+        <div class="tab-pane" id="available-bikes">
+          <div class="usage-graph" style="width:600px;height:300px">
+            <div style="margin-top:50px;margin-left:10px">
+              <img src="/images/spinner.gif"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="available-docks">
+          <div class="usage-graph" style="width:600px;height:300px">
+            <div style="margin-top:50px;margin-left:10px">
+              <img src="/images/spinner.gif"/>
+            </div>
           </div>
         </div>
       </div>
-      
     </div>
+
+
   </body>
 
   <script id="data" type="text/javascript">

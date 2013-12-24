@@ -66,7 +66,7 @@ function update_summary_bikes_graph(graph_selector, station_id, from_date, to_da
     });
 }
 
-function update_available_bikes_graph(graph_selector, station_id ) {
+function update_available_bikes_graph(graph_selector, station_id, from_date, to_date) {
 
   var url = "/available_bikes/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
   $.ajax(url).success(
@@ -97,7 +97,7 @@ function update_available_bikes_graph(graph_selector, station_id ) {
 }
 
 
-function update_available_docks_graph(graph_selector, station_id ) {
+function update_available_docks_graph(graph_selector, station_id, from_date, to_date) {
 
   var url = "/available_docks/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
   $.ajax(url).success(
