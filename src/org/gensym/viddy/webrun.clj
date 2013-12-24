@@ -10,8 +10,6 @@
     (fn []
       (.stop server))))
 
-
-
 (defn -main []
   (let [port (Integer/parseInt
               (or (System/getenv "PORT") "8080"))

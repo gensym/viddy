@@ -25,6 +25,12 @@
     (default-thunk)
     (time-format/parse time-formatter date-str-or-nil)))
 
+(defn- request-daterange [req]
+  (let [to-date (date-or-default (get (:params req) "to_date") #(time/now))
+        from-date (date-or-default (get (:params req) "from_date") #(time/minus- to-date (time/months 1)))]
+    {:to (.toDate to-date)
+     :from (.toDate from-date)}))
+
 (defn router [divvy-source]
   (w/make-router
 
@@ -47,43 +53,37 @@
                                                   (:station-name station-info))))))
    (w/regex-matcher #"/available_bikes/(\d+)\.edn"
                     (fn [req station-id]
-                      (let [to-date (time/now)
-                            from-date (time/minus- to-date (time/months 1))]
+                      (let [dates (request-daterange req)]
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body (pr-str
                                 (data/available-bikes divvy-source
                                                       (read-string station-id)
-                                                      (.toDate from-date)
-                                                      (.toDate to-date)))})))
+                                                      (:from dates)
+                                                      (:to dates)))})))
 
    (w/regex-matcher #"/available_docks/(\d+)\.edn"
                     (fn [req station-id]
-                      (let [to-date (time/now)
-                            from-date (time/minus- to-date (time/months 1))]
+                      (let [dates (request-daterange req)]
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body (print-str
                                 (data/available-docks divvy-source
                                                       (read-string station-id)
-                                                      (.toDate from-date)
-                                                      (.toDate to-date)))})))
+                                                      (:from dates)
+                                                      (:to dates)))})))
 
    (w/regex-matcher #"/available_bikes/weekdays/(\d+)\.edn"
                     (fn [req station-id]
-                      (let [to-date (date-or-default (get (:params req) "to_date") #(time/now))
-                            from-date (date-or-default (get (:params req) "from_date") #(time/minus- to-date (time/months 1)))]
-                        (log/info "Params were " (:params req))
-                        (log/info "Getting bike usages from " from-date "to" to-date)
+                      (let [dates (request-daterange req)]
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body  (pr-str
                                  (data/available-bikes-weekdays
                                   divvy-source
                                   (read-string station-id)
-                                  (.toDate from-date)
-                                  (.toDate to-date)))})))))
-
+                                  (:from dates)
+                                  (:to dates)))})))))
 
 (defn log-request [handler]
   (fn [request]
@@ -91,9 +91,6 @@
           response (handler request)]
       (log/info "Processing request for" (:uri request) "took" (- (java.lang.System/currentTimeMillis) start) "ms")
       response)))
-
-            
-                                                    
 
 (defn handler [db-spec]
   (let [datasource (storage/make-divvy-data db-spec)]

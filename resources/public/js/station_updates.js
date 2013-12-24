@@ -29,7 +29,6 @@ function to_data_series_percentiles(edn_percentiles) {
 
 function update_summary_bikes_graph(graph_selector, station_id, from_date, to_date) {
   var url = "/available_bikes/weekdays/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
-  console.log("Requesting " + url)
   $.ajax(url).success(
     function(e) {
       var percentiles = to_data_series_percentiles(e);
@@ -69,7 +68,8 @@ function update_summary_bikes_graph(graph_selector, station_id, from_date, to_da
 
 function update_available_bikes_graph(graph_selector, station_id ) {
 
-  $.ajax("/available_bikes/" + station_id + ".edn").success(
+  var url = "/available_bikes/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
+  $.ajax(url).success(
     function(e) {
       var updates = jsedn.toJS(jsedn.parse(e));
       var table = _.map(updates, function(update) {
@@ -99,7 +99,8 @@ function update_available_bikes_graph(graph_selector, station_id ) {
 
 function update_available_docks_graph(graph_selector, station_id ) {
 
-  $.ajax("/available_docks/" + station_id + ".edn").success(
+  var url = "/available_docks/" + station_id + ".edn?" + $.param({from_date: from_date, to_date: to_date});
+  $.ajax(url).success(
     function(e) {
       var updates = jsedn.toJS(jsedn.parse(e));
       var table = _.map(updates, function(update) {
