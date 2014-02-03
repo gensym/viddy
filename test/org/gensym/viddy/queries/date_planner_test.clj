@@ -92,6 +92,19 @@
 
 
 (deftest timestep-tree-tests
+
+  (testing "Should divide a timestamp by hours"
+    (is (= [3 [#inst "2013-10-01T08:00:00" #inst "2013-10-01T08:16:00"]]
+           (dp/divide-timestep [2 :hour]
+                               #inst "2013-10-01T02:00:00"
+                               #inst "2013-10-01T08:16:00"))))
+  
+  (testing "Should divide a timestamp by minutes"
+    (is (= [25 [#inst "2013-10-01T08:15:00" #inst "2013-10-01T08:16:23"]]
+           (dp/divide-timestep [15 :minute]
+                               #inst "2013-10-01T02:00:00"
+                               #inst "2013-10-01T08:16:23"))))
+  
   (testing "Should divide a timestamp by months"
     (is (= [2 [#inst "2013-10-01T00:00:00" #inst "2013-11-12T08:15:00"]]
            (dp/divide-timestep [3 :month]

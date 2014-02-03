@@ -7,7 +7,9 @@
             Years
             Months
             Weeks
-            Days]))
+            Days
+            Hours
+            Minutes]))
 
 (defn make-time-tree [start-date end-date]
   [start-date [] end-date])
@@ -128,6 +130,24 @@
                               (.plusDays  from (* quotient divisor))
                               to)))
 
+(defn- divide-hours [divisor from to]
+  (let [numerator (.getHours (Hours/hoursBetween from to))
+        quotient (int (/ numerator divisor))]
+    (ensure-range-is-positive quotient
+                              from
+                              (.plusHours from (* quotient divisor))
+                              to)))
+
+(defn- divide-minutes [divisor from to]
+  (let [numerator (.getMinutes (Minutes/minutesBetween from to))
+        quotient (int (/ numerator divisor))]
+    (ensure-range-is-positive quotient
+                              from
+                              (.plusMinutes from (* quotient divisor))
+                              to)))
+
+
+
 (defn- divide-weeks [divisor from to]
   (let [numerator (.getWeeks (Weeks/weeksBetween from to))
         quotient (int (/ numerator divisor))]
@@ -153,7 +173,10 @@
           :year (divide-years step-quantity fdt tdt)
           :month (divide-months step-quantity fdt tdt)
           :week (divide-weeks step-quantity fdt tdt)
-          :day (divide-days step-quantity fdt tdt))]
+          :day (divide-days step-quantity fdt tdt)
+          :hour (divide-hours step-quantity fdt tdt)
+          :minute (divide-minutes step-quantity fdt tdt)
+          )]
     [quotient [(.toDate rem-from) (.toDate rem-to)]]))
 
 
