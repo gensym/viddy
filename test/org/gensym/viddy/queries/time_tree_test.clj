@@ -1,6 +1,6 @@
 (ns org.gensym.viddy.queries.time-tree-test
   (require [org.gensym.viddy.queries.time-tree :as tt])
-  (:use clojure.test))
+  (use clojure.test))
 
 (defn primer [x]
   (fn [a b]

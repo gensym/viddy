@@ -18,7 +18,7 @@
                  [org.clojure/data.json "0.2.2"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
                  [postgresql "9.1-901.jdbc4"]]
-  :warn-on-reflection true
+  :warn-on-reflection false
   :jvm-opts ["-XX:+TieredCompilation" "-XX:TieredStopAtLevel=1" "-Xmx384m" "-Xss512k"]
   :java-agents [[com.newrelic.agent.java/newrelic-agent "2.21.3"]]
   :aliases { "webrun"
