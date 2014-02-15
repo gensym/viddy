@@ -1,3 +1,7 @@
+latest.dump
+latest.dump.gz
+latest.sql
+environment.notes
 /target
 /lib
 /classes

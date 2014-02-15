@@ -1,6 +1,8 @@
-(ns org.gensym.viddy.dbconnection)
+(ns org.gensym.viddy.dbconnection
+  (require [clojure.tools.logging :as log]))
 
 (defn db-spec [uristring]
+  (log/info "Connecting to database at URL: '" uristring "'")
   (let [uri (java.net.URI. uristring)
         without-auth     {:subprotocol "postgresql"
                           :subname (str "//" (.getHost uri) ":"

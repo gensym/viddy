@@ -4,11 +4,11 @@
 (defn empty-datacache []
   (let [t (fn [k] (throw (Exception. (str "function not found: " k))))]
     (reify dc/DateCache
-      (maybe-find-for-date-range [cache k start end]
+      (maybe-find-for-date-range [cache k start end args]
         (t k))
-      (calculate-for-date-range [cache k start end]
+      (calculate-for-date-range [cache k start end args]
         (t k))
-      (store-calculation [cache k start end c]
+      (store-calculation [cache k start end c args]
         (t k))
       (concat-calculation [cache k c1 c2]
         (t k))
@@ -18,20 +18,20 @@
 
 (defn add-function [cache key calc-fn concat-fn empty-val]
   (reify dc/DateCache
-    (maybe-find-for-date-range [this k start end]
+    (maybe-find-for-date-range [this k start end args]
       (if (= key k)
         [false nil]
-        (dc/maybe-find-for-date-range cache k start end)))
+        (dc/maybe-find-for-date-range cache k start end args)))
 
-    (calculate-for-date-range [this k start end]
+    (calculate-for-date-range [this k start end args]
       (if (= key k)
-        (calc-fn start end)
-        (dc/calculate-for-date-range cache k start end)))
+        (calc-fn start end args)
+        (dc/calculate-for-date-range cache k start end args)))
 
-    (store-calculation [this k start end calculation]
+    (store-calculation [this k start end calculation args]
       (if (= key k)
         nil
-        (dc/store-calculation range k start end calculation)))
+        (dc/store-calculation range k start end calculation args)))
 
     (concat-calculation [this k c1 c2]
       (if (= key k)
