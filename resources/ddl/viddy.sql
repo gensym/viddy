@@ -38,6 +38,14 @@ CREATE TABLE station_updates (
 CREATE INDEX station_updates_station_id ON station_updates USING hash (station_id);
 CREATE INDEX station_updates_execution_id ON station_updates USING hash (execution_id);
 
+CREATE MATERIALIZED  VIEW station_additions AS
+       SELECT s1.station_id AS station_id, 
+              MIN(e.execution_time) AS addition_time
+       FROM station_updates s1, station_update_executions e
+       WHERE s1.execution_id = e.id 
+       GROUP BY s1.station_id;
+
+
 CREATE MATERIALIZED VIEW current_stations AS
        SELECT s.id,
               s.station_id, 
@@ -53,9 +61,3 @@ CREATE MATERIALIZED VIEW current_stations AS
        AND e.insertion_time = (
            SELECT MAX(e2.insertion_time) FROM station_update_executions e2);
 
-CREATE MATERIALIZED  VIEW station_additions AS
-       SELECT s1.station_id AS station_id, 
-              MIN(e.execution_time) AS addition_time
-       FROM station_updates s1, station_update_executions e
-       WHERE s1.execution_id = e.id 
-       GROUP BY s1.station_id;

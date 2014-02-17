@@ -17,7 +17,9 @@
   [:td.station-available-bikes-quantity] (enl/content
                                           (str (:available-bikes station)))
   [:td.station-available-docks-quantity] (enl/content
-                                          (str (:available-docks station))))
+                                          (str (:available-docks station)))
+  [:td.addition-time] (enl/content
+                       (str (:addition-time station))))
 
 (enl/defsnippet station-additions-table
   "templates/index.html"

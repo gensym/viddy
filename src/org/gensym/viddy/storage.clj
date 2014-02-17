@@ -77,7 +77,7 @@
               [(str "SELECT id, station_id, "
                     "       station_name, bikes, "
                     "       docks, longitude, latitude, "
-                    "       status, execution_time "
+                    "       status, execution_time, addition_time "
                     "FROM current_stations ORDER BY station_id")])
    (map 
     #(replace-keys {:station_id :station-id
@@ -85,7 +85,8 @@
                     :execution_time :execution-time
                     :bikes :available-bikes
                     :docks :available-docks
-                    :status :station-status} %))))
+                    :status :station-status
+                    :addition_time :addition-time} %))))
 
 (defn newest-stations [db-spec]
   (->>

@@ -30,7 +30,9 @@
                         (:stations)
                         (mapkeys divvy-api->storage))]
           (storage/save-station-updates! db-spec execution-time rows)
-          (storage/refresh-current-stations db-spec)
-          (storage/refresh-station-addtions db-spec)))
+          ;; current-stations uses data from station-additions, so it
+          ;; must be updated second
+          (storage/refresh-station-addtions db-spec)
+          (storage/refresh-current-stations db-spec)))
       (do
         (log/error "Failed to retrieve current Divvy station status: " current-status)))))
