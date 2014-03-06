@@ -14,12 +14,12 @@
     (let [input [1 1 2 4 4 4 5 8 8 10]
           f1 (freq/create input)
           f2 (freq/create [])]
-      (is (= input (freq/to-seq (freq/merge f1 f2))))))
+      (is (= input (freq/to-seq (freq/merge-freqs f1 f2))))))
   (testing "Should merge two seqs"
     (let [a (freq/create [1 1 3 5 5 5 5 5 5])
           b (freq/create [1 2 2 5 9 9])
           expected (freq/create [1 1 1 2 2 3 5 5 5 5 5 5 5 9 9])]
-      (is (= expected (freq/merge a b))))))
+      (is (= expected (freq/merge-freqs a b))))))
 
 (deftest percentiles
   (testing "Should split simple numbers into percentiles"

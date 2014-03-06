@@ -29,7 +29,7 @@
                                              (rest a)
                                              (rest b))) )))
 
-(defn merge [a b]
+(defn merge-freqs [a b]
   {:count (+ (:count a) (:count b))
    :items (merge-freq-seqs (:items a) (:items b))})
 

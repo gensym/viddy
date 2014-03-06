@@ -3,6 +3,7 @@
        [clj-time.predicates :only [sunday? saturday?]])
   (require [org.gensym.util.timeseries :as timeseries]
            [org.gensym.viddy.timeslices :as ts]
+           [org.gensym.viddy.frequencies :as freq]
            [org.gensym.viddy.statistics :as stats]))
 
 (defprotocol DivvyData
@@ -24,6 +25,20 @@
               (select-keys record [:execution-time :available-docks])))
        (timeseries/filter-redundant [:execution-time])))
 
+(defn available-bikes-frequencies [datasource
+                                   station-id
+                                   from-date
+                                   to-date
+                                   include-datum?
+                                   datum->value
+                                   datum->key]
+  (->> (station-updates datasource station-id from-date to-date)
+       (filter include-datum?)
+       (map (fn [rec] [(datum->key rec) (datum->value rec)]))
+       (map (fn [[k v]] {k (freq/create [v])}))
+       (apply merge-with freq/merge-freqs)))
+
+
 (defn available-bikes-percentiles [datasource
                                    station-id
                                    from-date
@@ -32,10 +47,16 @@
                                    datum->value
                                    datum->key
                                    percentiles]
-  (->> (station-updates datasource station-id from-date to-date)
-       (filter include-datum?)
-       (map (fn [rec] [(datum->key rec) (datum->value rec)]))
-       (stats/analyse-percentages first second percentiles)
+
+  (->> (available-bikes-frequencies datasource
+                                    station-id
+                                    from-date
+                                    to-date
+                                    include-datum?
+                                    datum->value
+                                    datum->key)
+
+       (map (fn [[k f]] [k (freq/percentiles percentiles f)]))
        (stats/rotate-keys)
        (stats/rename-keys #(str "percentile-" (int (* % 100))))))
 
