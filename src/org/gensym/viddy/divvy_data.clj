@@ -38,6 +38,13 @@
        (map (fn [[k v]] {k (freq/create [v])}))
        (apply merge-with freq/merge-freqs)))
 
+(defn available-bikes-frequencies->percentiles [frequencies
+                                               percentiles]
+  (->> frequencies
+       (map (fn [[k f]] [k (freq/percentiles percentiles f)]))
+       (stats/rotate-keys)
+       (stats/rename-keys #(str "percentile-" (int (* % 100))))))
+
 
 (defn available-bikes-percentiles [datasource
                                    station-id
@@ -48,17 +55,15 @@
                                    datum->key
                                    percentiles]
 
-  (->> (available-bikes-frequencies datasource
-                                    station-id
-                                    from-date
-                                    to-date
-                                    include-datum?
-                                    datum->value
-                                    datum->key)
-
-       (map (fn [[k f]] [k (freq/percentiles percentiles f)]))
-       (stats/rotate-keys)
-       (stats/rename-keys #(str "percentile-" (int (* % 100))))))
+  (available-bikes-frequencies->percentiles
+   (available-bikes-frequencies datasource
+                                station-id
+                                from-date
+                                to-date
+                                include-datum?
+                                datum->value
+                                datum->key)
+   percentiles))
 
 
 (defn weekend? [station-update]
@@ -77,3 +82,15 @@
                                :available-bikes
                                (comp ts/fifteen-minutes :execution-time)
                                [0.1 0.15 0.25 0.5 0.75 0.85 0.9]))
+
+(defn available-bikes-weekdays-frequencies [datasource
+                                             station-id
+                                             from-date
+                                             to-date]
+  (available-bikes-frequencies datasource
+                               station-id
+                               from-date
+                               to-date
+                               weekday?
+                               :available-bikes
+                               (comp ts/fifteen-minutes :execution-time)))

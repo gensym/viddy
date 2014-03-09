@@ -1,6 +1,7 @@
 (ns org.gensym.viddy.queries.divvy-history
   (require [clojure.set :as set]
            [org.gensym.viddy.divvy-data :as d]
+           [org.gensym.viddy.frequencies :as freq]
            [org.gensym.viddy.queries.date-cache :as c]
            [org.gensym.viddy.queries.pass-through-date-cache :as pt])
   (import [org.joda.time DateTimeConstants DateTime DateTimeZone Weeks Days]))
@@ -14,8 +15,10 @@
 (defn calc-available-bikes-weekdays [datasource start end [station-id]]
   {:start start
    :end end
-   :data
-   (d/available-bikes-weekdays station-id start end)})
+   :data (d/available-bikes-weekdays-frequencies datasource
+                                                 station-id
+                                                 start
+                                                 end)})
 
 (def weekdays #{DateTimeConstants/MONDAY
                 DateTimeConstants/TUESDAY
@@ -39,27 +42,14 @@
                                        {s2 :start e2 :end d2 :data}]
 
     (let [dur-1 (weekdays-in-range s1 e1)
-          dur-2 (weekdays-in-range s2 e2)
-          total-dur (+ dur-1 dur-2)
-          combine-values (fn [a b]
-                           (reduce (fn [m k]
-                                     (let [v1 (get a k 0)
-                                           v2 (get b k 0)]
-                                       (assoc m k (/ (+ (* dur-1 v1)
-                                                        (* dur-2 v2))
-                                                     total-dur))))
-                                   {}
-                                   (set/union (keys a) (keys b))))]
+          dur-2 (weekdays-in-range s2 e2)]
       {:start s1
        :end e2
        :data (reduce (fn [m k]
-                       (assoc m k (combine-values (get d1 k) (get d2 k))))
+                       (assoc m k (freq/merge-freqs (get d1 k) (get d2 k))))
                      {}
                      (set/intersection (into #{} (keys d1))
-                                       (into #{} (keys d2))))})  
-
-
-)
+                                       (into #{} (keys d2))))}))
 
 (defn make-data-source [calc-data-source]
   {:steps [[1 :year]
@@ -94,10 +84,12 @@
                     [station-id]))
 
 (defn available-bikes-weekdays [ds station-id from-date to-date]
-  (:data
-   (c/produce-result (:steps ds)
-                     (:cache ds)
-                     :available-bikes-weekdays
-                     from-date
-                     to-date
-                     station-id)))
+  (d/available-bikes-frequencies->percentiles
+   (:data
+    (c/produce-result (:steps ds)
+                      (:cache ds)
+                      :available-bikes-weekdays
+                      from-date
+                      to-date
+                      station-id))
+   [0.1 0.15 0.25 0.5 0.75 0.85 0.9]))

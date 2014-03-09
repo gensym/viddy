@@ -1,5 +1,6 @@
 (ns org.gensym.viddy.queries.divvy-history-tests
-  (require [org.gensym.viddy.queries.divvy-history :as dh])
+  (require [org.gensym.viddy.queries.divvy-history :as dh]
+           [org.gensym.viddy.frequencies :as freq])
   (use clojure.test))
 
 (deftest weekdays-in-range-tests
@@ -12,31 +13,18 @@
   (testing "greater than one week should include all weekdays"
     (is (= 8 (dh/weekdays-in-range #inst "2013-01-07" #inst "2013-01-16")))))
 
-(comment   (testing "Should concat"
-
-             (not (= {:data {"percentile-50"
-                             {"Tuesday" 22, "Monday" 11, "Wednesday" 18},
-                             "percentile-75"
-                             {"Tuesday" 90, "Monday" 40, "Wednesday" 18},
-                             "percentile-25"
-                             {"Tuesday" 13, "Monday" 12, "Wednesday" 18}},
-                      :start #inst "2013-01-06T00:00:00.000-00:00",
-                      :end #inst "2013-01-17T00:00:00.000-00:00"}
-                     {:start #inst "2014-01-06T00:00:00.000-00:00",
-                      :end #inst "2013-01-16T00:00:00.000-00:00", :data {"percentile-25" {"Tuesday" 2185/128, "Monday" 12, "Wednesday" 18}, "percentile-75" {"Tuesday" 4197/64, "Monday" 4599/128, "Wednesday" 18}, "percentile-50" {"Tuesday" 1509/128, "Monday" 1509/256, "Wednesday" 18}}}))
-))
 
 (deftest concat-available-bikes-weekdays-tests
   (testing "should concat equivalent data"
     (let [d1 {:start #inst "2013-01-06"
               :end #inst "2013-01-07"
-              :data {"percentile"  {"Monday" 12}}}
+              :data {"Monday" (freq/create [1 2 3])}}
           d2 {:start #inst "2013-01-13"
               :end #inst "2013-01-16"
-              :data {"percentile" {"Monday" 12}}}
+              :data {"Monday" (freq/create [2 3 4])}}
           expected {:start #inst "2013-01-06"
                     :end #inst "2013-01-16"
-                    :data {"percentile" {"Monday" 12}}}]
+                    :data {"Monday" (freq/create [1 2 2 3 3 4])}}]
       (is (= expected (dh/concat-available-bikes-weekdays d1 d2)))))
 
   (comment
