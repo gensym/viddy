@@ -36,7 +36,7 @@
        (filter include-datum?)
        (map (fn [rec] [(datum->key rec) (datum->value rec)]))
        (map (fn [[k v]] {k (freq/create [v])}))
-       (apply merge-with freq/merge-freqs)))
+       (apply merge-with freq/merge-freqs {})))
 
 (defn available-bikes-frequencies->percentiles [frequencies
                                                percentiles]

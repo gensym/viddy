@@ -1,5 +1,7 @@
 (ns org.gensym.viddy.web.webcore-test
   (:require [org.gensym.viddy.web.webcore :as webcore]
+            [org.gensym.viddy.queries.divvy-history :as history]
+            [org.gensym.viddy.queries.date-cache :as cache]
             [org.gensym.viddy.divvy-data :as divvy])
   (:use [clojure.test]))
 
@@ -22,6 +24,10 @@
       (newest-stations [datasource]
         ((:newest-stations fns) datasource)))))
 
+
+(defn- make-datacache [overrides]
+  (reify ))
+
 (deftest available-bikes-edn-tests
   (testing "Should return a result"
     (let [bike-data [{:execution-time #inst "2013-08-28T00:38:12.455-00:00"
@@ -34,8 +40,8 @@
           datasource (make-datasource {:station-updates
                                        (fn [datasource station-id from-date to-date]
                                          (get {23 bike-data} station-id))})
-
-          rfn (webcore/router datasource)
+          datacache (history/make-data-source datasource)
+          rfn (webcore/router datasource datacache)
           response (rfn {:uri "/available_bikes/23.edn"})]
 
       (is (= 200 (:status response)))
@@ -54,7 +60,8 @@
                                        (fn [datasource station-id from-date to-date]
                                          (get {23 dock-data} station-id))})
           
-          rfn (webcore/router datasource)
+          datacache (history/make-data-source datasource)
+          rfn (webcore/router datasource datacache)
           response (rfn {:uri "/available_docks/23.edn"})]
 
       (is (= 200 (:status response)))
@@ -63,7 +70,8 @@
 
 (deftest index-tests
   (let [datasource (make-datasource {})
-        rfn (webcore/router datasource)]
+        datacache (history/make-data-source datasource)
+        rfn (webcore/router datasource datacache)]
     
     (testing "Should return a result"
       (let [response (rfn {:uri "/index.html"})]

@@ -31,7 +31,7 @@
     (store-calculation [this k start end calculation args]
       (if (= key k)
         nil
-        (dc/store-calculation range k start end calculation args)))
+        (dc/store-calculation cache k start end calculation args)))
 
     (concat-calculation [this k c1 c2]
       (if (= key k)

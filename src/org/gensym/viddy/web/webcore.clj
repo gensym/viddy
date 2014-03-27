@@ -1,6 +1,7 @@
 (ns org.gensym.viddy.web.webcore
   (:require
    [org.gensym.viddy.storage :as storage]
+   [org.gensym.viddy.queries.divvy-history :as history]
    [org.gensym.viddy.divvy-data :as data]
    [org.gensym.viddy.web.stations :as stations]
    [org.gensym.util.webroutes :as w]
@@ -31,7 +32,7 @@
     {:to (.toDate to-date)
      :from (.toDate from-date)}))
 
-(defn router [divvy-source]
+(defn router [divvy-source divvy-cache]
   (w/make-router
 
    (w/strings-matcher ["/index.html" "/"]
@@ -57,10 +58,11 @@
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body (pr-str
-                                (data/available-bikes divvy-source
-                                                      (read-string station-id)
-                                                      (:from dates)
-                                                      (:to dates)))})))
+                                (history/available-bikes
+                                 divvy-cache
+                                 (read-string station-id)
+                                 (:from dates)
+                                 (:to dates)))})))
 
    (w/regex-matcher #"/available_docks/(\d+)\.edn"
                     (fn [req station-id]
@@ -68,10 +70,11 @@
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body (print-str
-                                (data/available-docks divvy-source
-                                                      (read-string station-id)
-                                                      (:from dates)
-                                                      (:to dates)))})))
+                                (history/available-docks
+                                 divvy-cache
+                                 (read-string station-id)
+                                 (:from dates)
+                                 (:to dates)))})))
 
    (w/regex-matcher #"/available_bikes/weekdays/(\d+)\.edn"
                     (fn [req station-id]
@@ -79,8 +82,8 @@
                         {:status 200
                          :headers {"Content-Type" "application/edn"}
                          :body  (pr-str
-                                 (data/available-bikes-weekdays
-                                  divvy-source
+                                 (history/available-bikes-weekdays
+                                  divvy-cache
                                   (read-string station-id)
                                   (:from dates)
                                   (:to dates)))})))))
@@ -93,8 +96,9 @@
       response)))
 
 (defn handler [db-spec]
-  (let [datasource (storage/make-divvy-data db-spec)]
-    (-> (params/wrap-params (router datasource))
+  (let [datasource (storage/make-divvy-data db-spec)
+        datacache (history/make-data-source datasource)]
+    (-> (params/wrap-params (router datasource datacache))
         (log-request)
         (file/wrap-file "resources/public")
         (file-info/wrap-file-info))))

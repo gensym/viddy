@@ -15,7 +15,32 @@
 
 
 (deftest concat-available-bikes-weekdays-tests
-  (testing "should concat equivalent data"
+  (testing "should concat something with empty"
+    (let [empty {:start nil
+                 :end nil
+                 :data {}}
+          d {:start #inst "2013-01-06"
+             :end #inst "2013-01-07"
+             :data {"Monday" (freq/create [1 2 3])}}]
+
+      (do 
+        (is (= d (dh/concat-available-bikes-weekdays empty d)))
+        (is (= d (dh/concat-available-bikes-weekdays d empty))))))
+
+  (testing "should concat something with no data"
+    (let [empty {:start #inst "2013-01-05"
+                 :end #inst "2013-01-06"
+                 :data {}}
+          d {:start #inst "2013-01-06"
+             :end #inst "2013-01-07"
+             :data {"Monday" (freq/create [1 2 3])}}
+          expected {:start #inst "2013-01-05"
+                    :end #inst "2013-01-07"
+                    :data {"Monday" (freq/create [1 2 3])}}]
+      (is (= expected (dh/concat-available-bikes-weekdays empty d)))))
+
+  
+  (testing "should concat data with same types of datapoints"
     (let [d1 {:start #inst "2013-01-06"
               :end #inst "2013-01-07"
               :data {"Monday" (freq/create [1 2 3])}}
@@ -25,35 +50,6 @@
           expected {:start #inst "2013-01-06"
                     :end #inst "2013-01-16"
                     :data {"Monday" (freq/create [1 2 2 3 3 4])}}]
-      (is (= expected (dh/concat-available-bikes-weekdays d1 d2)))))
-
-  (comment
-    (testing "should concat data with same types of datapoints"
-      (let [d1 {:start #inst "2014-01-06"
-                :end #inst "2013-01-07"
-                :data {"percentile-25"
-                       {"Monday" 12, "Tuesday" 17, "Wednesday" 18}
-                       "percentile-50"
-                       {"Monday" 6, "Tuesday" 12, "Wednesday" 18}
-                       "percentile-75"
-                       {"Monday" 36, "Tuesday" 66, "Wednesday" 18}}}
-            d2 {:start #inst "2013-01-13"
-                :end #inst "2013-01-16"
-                :data {"percentile-25"
-                       {"Monday" 12 "Tuesday" 11 "Wednesday" 18}
-                       "percentile-50"
-                       {"Monday" 15 "Tuesday" 30 "Wednesday" 18}
-                       "percentile-75"
-                       {"Monday" 42 "Tuesday" 102 "Wednesday" 18}}}
-            expected {:start #inst "2013-01-06"
-                      :end #inst "2013-01-17"
-                      :data {"percentile-25"
-                             {"Monday" 12 "Tuesday" 13 "Wednesday" 18}
-                             "percentile-50"
-                             {"Monday" 11 "Tuesday" 22 "Wednesday" 18}
-                             "percentile-75"
-                             {"Monday" 40 "Tuesday" 90 "Wednesday" 18}}}]
-      
-        (is (= expected (dh/concat-available-bikes-weekdays d1 d2)))))))
+      (is (= expected (dh/concat-available-bikes-weekdays d1 d2))))))
 
 

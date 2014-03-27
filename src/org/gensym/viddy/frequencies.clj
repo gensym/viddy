@@ -14,6 +14,10 @@
 (defn to-seq [ordered-frequencies]
   (mapcat (fn [[val count]] (repeat count val)) (:items ordered-frequencies)))
 
+(defn create-empty []
+  {:count 0
+   :items []})
+
 (defn- merge-freq-seqs [a b]
   (loop [res ()
          a a

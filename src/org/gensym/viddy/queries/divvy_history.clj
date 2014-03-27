@@ -41,15 +41,21 @@
 (defn concat-available-bikes-weekdays [{s1 :start e1 :end d1 :data}
                                        {s2 :start e2 :end d2 :data}]
 
-    (let [dur-1 (weekdays-in-range s1 e1)
-          dur-2 (weekdays-in-range s2 e2)]
-      {:start s1
-       :end e2
-       :data (reduce (fn [m k]
-                       (assoc m k (freq/merge-freqs (get d1 k) (get d2 k))))
-                     {}
-                     (set/intersection (into #{} (keys d1))
-                                       (into #{} (keys d2))))}))
+  (cond (or (nil? s1) (nil? e1)) {:start s2 :end e2 :data d2}
+        (or (nil? s2) (nil? e2)) {:start s1 :end e1 :data d1}
+        :else
+        (let [dur-1 (weekdays-in-range s1 e1)
+              dur-2 (weekdays-in-range s2 e2)]
+          {:start s1
+           :end e2
+           :data (reduce (fn [m k]
+                           (assoc m k
+                                  (freq/merge-freqs
+                                   (get d1 k (freq/create-empty))
+                                   (get d2 k (freq/create-empty)))))
+                         {}
+                         (set/union (into #{} (keys d1))
+                                           (into #{} (keys d2))))})))
 
 (defn make-data-source [calc-data-source]
   {:steps [[1 :year]
@@ -65,7 +71,14 @@
               (pt/add-function :available-docks
                                (partial calc-available-docks calc-data-source)
                                concat
-                               []))})
+                               [])
+              (pt/add-function :available-bikes-weekdays
+                               (partial calc-available-bikes-weekdays
+                                        calc-data-source)
+                               concat-available-bikes-weekdays
+                               {:start nil
+                                :end nil
+                                :data {}}))})
 
 (defn available-bikes [ds station-id from-date to-date]
   (c/produce-result (:steps ds)
@@ -91,5 +104,5 @@
                       :available-bikes-weekdays
                       from-date
                       to-date
-                      station-id))
+                      [station-id]))
    [0.1 0.15 0.25 0.5 0.75 0.85 0.9]))
