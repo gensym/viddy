@@ -1,6 +1,6 @@
 # Viddy
 
-An application that fetches, analyzes, and displays Divvy usage data. It currently runs at http://viddy.gensym.org
+An application that fetches, analyzes, and displays Divvy usage data.
 
 ## Usage
 
